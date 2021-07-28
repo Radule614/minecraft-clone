@@ -5,6 +5,13 @@
 #include <GLEW/glew.h>
 #include <glm/glm.hpp>
 
+struct Texture {
+	unsigned int id;
+	string path;
+};
+
+static vector<Texture> loaded_textures;
+
 class Quad {
 public:
 	enum Face 
@@ -131,11 +138,3 @@ private:
 		memcpy(arr, positions, sizeof(positions));
 	}
 };
-
-//glm::vec2 Quad::textureCoordinates[] = {
-//	glm::vec2(0.0f, 0.0f),
-//	glm::vec2(1.0f, 0.0f),
-//	glm::vec2(0.0f, 1.0f),
-//	glm::vec2(1.0f, 1.0f)
-//};
-

@@ -9,7 +9,7 @@ namespace global {
 	unsigned int screenWidth = 1270;
 	unsigned int screenHeight = 720;
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 500.0f);
 	Camera camera;
 
 	float lastX = screenWidth / 2.0;

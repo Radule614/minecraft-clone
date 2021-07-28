@@ -13,7 +13,7 @@
 
 #include "src/tex.h"
 
-#include "src/quad.h"
+#include "src/cube.h"
 
 using namespace std;
 using namespace global;
@@ -115,38 +115,43 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    Quad s1(Quad::FRONT);
-    Quad s2(Quad::BACK);
-    Quad s3(Quad::LEFT);
-    Quad s4(Quad::RIGHT);
-    Quad s5(Quad::TOP);
-    Quad s6(Quad::BOTTOM);
+    Cube kocka;
 
     Shader objectShader("res\\shaders\\vertex.glsl", "res\\shaders\\fragment.glsl");
+
+    int start = glfwGetTime();
+    int delta;
 
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        if (deltaTime < 1.0 / maxFPS) continue;
+        //if (deltaTime < 1.0 / maxFPS) continue;
         lastFrame = currentFrame;
         fpsCounter();
         glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         objectShader.bind();
         objectShader.resetModelMatrix();
         objectShader.setUniformMatrix("projection", projection);
         objectShader.setUniformMatrix("view", camera.getView());
-        objectShader.updateModelMatrix(Shader::translate, glm::vec3(0.0f));
-        objectShader.updateModelMatrix(Shader::scale, glm::vec3(0.5f));
-        s1.draw();
-        s2.draw();
-        s3.draw();
-        s4.draw();
-        s5.draw();
-        s6.draw();
-
+        double color = 0;
+        for (int i = 0; i < 100; i++)
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                objectShader.setUniformVec3("color", glm::vec3(0.01+color, 0.5+color/2, 0.1+color/3));
+                objectShader.resetModelMatrix();
+                objectShader.updateModelMatrix(Shader::translate, glm::vec3(2 * j, 0.0f, -2 * i));
+                kocka.draw();
+                
+                color += abs(sin(glfwGetTime()*cos(glfwGetTime())));
+                if (color >= 1.0) color = 0;
+            }
+        }
+        
         processInput(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
