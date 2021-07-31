@@ -98,7 +98,7 @@ void Cube::setPositions()
 
 void Cube::draw()
 {
-	Cube::setPositions();
+	
 	glBindVertexArray(VA);
 	glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, positions.size());
 	glBindVertexArray(0);

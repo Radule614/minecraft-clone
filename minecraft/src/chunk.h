@@ -6,9 +6,19 @@
 
 class Chunk {
 public:
-	Chunk(){}
 	Chunk(glm::vec3 pos) : position(pos)
 	{
+		blocks = new Cube**[CHUNK_SIZE];
+		
+		for (int i = 0; i < CHUNK_SIZE; i++)
+		{
+			blocks[i] = new Cube*[CHUNK_SIZE];
+			for (int j = 0; j < CHUNK_SIZE; j++)
+			{
+				blocks[i][j] = new Cube[CHUNK_SIZE];
+			}
+		}
+
 		for (int i = 0; i < CHUNK_SIZE; i++)
 		{
 			for (int j = 0; j < CHUNK_SIZE; j++)
@@ -24,9 +34,25 @@ public:
 				}
 			}
 		}
-		blocks[0][0][0].type = Cube::AIR;
 		determineBlocksToDraw();
 	}
+
+	/*~Chunk() {
+		for (int i = 0; i < CHUNK_SIZE; i++)
+		{
+			for (int j = 0; j < CHUNK_SIZE; j++)
+			{
+				delete[] this->blocks[i][j];
+			}
+			delete[] this->blocks[i];
+		}
+		delete[] this->blocks;
+	}*/
+	
+private:
+	Cube*** blocks;
+	glm::vec3 position;
+	vector<Cube> blocksToDraw;
 
 	void determineBlocksToDraw()
 	{
@@ -37,7 +63,7 @@ public:
 				for (int k = 0; k < CHUNK_SIZE; k++)
 				{
 					if (blocks[i][j][k].type == Cube::AIR) continue;
-					if (i==0||j==0||k==0||i==CHUNK_SIZE-1||j==CHUNK_SIZE-1||k==CHUNK_SIZE-1) 
+					if (i == 0 || j == 0 || k == 0 || i == CHUNK_SIZE - 1 || j == CHUNK_SIZE - 1 || k == CHUNK_SIZE - 1)
 					{
 						blocksToDraw.push_back(blocks[i][j][k]);
 						Cube::positions.push_back(blocks[i][j][k].position);
@@ -65,8 +91,4 @@ public:
 			}
 		}
 	}
-private:
-	Cube blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
-	glm::vec3 position;
-	vector<Cube> blocksToDraw;
 };

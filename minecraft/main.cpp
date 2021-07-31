@@ -29,7 +29,7 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
-    camera.speed = 30.0f * deltaTime;
+    camera.speed = 50.0f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         camera.position += camera.speed * glm::normalize(camera.front);
@@ -81,30 +81,25 @@ void fpsCounter()
 int main()
 {
     GLFWwindow* window;
-
-    /* Initialize the library */
     if (!glfwInit())
         return -1;
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(screenWidth, screenHeight, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(screenWidth, screenHeight, "Minecraft", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
-
-    /* Make the window's context current */
     glfwMakeContextCurrent(window);
-
     if (glewInit() != GLEW_OK)
     {
         std::cout << "GLEW NOT OK" << std::endl;
         exit(-2);
     }
 
+    //settings
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glViewport(0, 0, screenWidth, screenHeight);
@@ -112,11 +107,10 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    //rendering data
     Cube::setData();
     Cube::setLayout();
-
     Shader objectShader("res\\shaders\\vertex.glsl", "res\\shaders\\fragment.glsl");
-
     vector<glm::vec3> positions;
     for (int i = 0; i < 100; i++)
     {
@@ -125,6 +119,7 @@ int main()
             positions.push_back(glm::vec3(2 * j, 0.0f, -2 * i));
         }
     }
+
     TextureLoader::load("res\\textures\\grass_top.jpg", 0);
     objectShader.setUniformInt("tex0", 0);
     TextureLoader::load("res\\textures\\grass_side.jpg", 1);
@@ -132,12 +127,20 @@ int main()
     TextureLoader::load("res\\textures\\dirt.jpg", 2);
     objectShader.setUniformInt("tex2", 2);
 
-    Chunk World[4];
-    for (int i = 0; i < 4; i++)
+    vector<Chunk> World;
+    for (int i = 0; i < 16; i++)
     {
-        World[i] = Chunk(glm::vec3(0.0f, i * 1.0f, 0.0f));
+        for (int j = 0; j < 2; j++)
+        {
+            for (int k = 0; k < 16; k++)
+            {
+                World.push_back(Chunk(glm::vec3(-8.0f + i, -3 + j, -8.0f + k)));
+            }
+        }
     }
+    Cube::setPositions();
 
+    //rendering
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -152,9 +155,8 @@ int main()
         objectShader.resetModelMatrix();
         objectShader.setUniformMatrix("projection", projection);
         objectShader.setUniformMatrix("view", camera.getView());
-
-        Cube::draw();
         
+        Cube::draw();
         
         processInput(window);
         glfwSwapBuffers(window);

@@ -5,11 +5,11 @@
 #include "Camera.h"
 
 namespace global {
-	const unsigned int maxFPS = 200;
-	unsigned int screenWidth = 1270;
-	unsigned int screenHeight = 720;
+	const unsigned int maxFPS = 210;
+	unsigned int screenWidth = 1600;
+	unsigned int screenHeight = 900;
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 500.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)screenWidth / (float)screenHeight, 0.1f, 1500.0f);
 	Camera camera;
 
 	float lastX = screenWidth / 2.0;
