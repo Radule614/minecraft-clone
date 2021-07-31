@@ -7,13 +7,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+#include "src/texture_loader.h"
 #include "src/shader.h"
-
 #include "src/globals.h"
-
-#include "src/tex.h"
-
-#include "src/cube.h"
+#include "src/chunk.h"
 
 using namespace std;
 using namespace global;
@@ -32,22 +29,22 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
-    camera.speed = 10.0f * deltaTime;
+    camera.speed = 30.0f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.position += camera.speed * camera.front;
+        camera.position += camera.speed * glm::normalize(camera.front);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.position -= camera.speed * camera.front;
+        camera.position -= camera.speed * glm::normalize(camera.front);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.position += camera.speed * glm::cross(camera.front, camera.up);
+        camera.position += camera.speed * glm::normalize(glm::cross(camera.front, camera.up));
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.position -= camera.speed * glm::cross(camera.front, camera.up);
+        camera.position -= camera.speed * glm::normalize(glm::cross(camera.front, camera.up));
     }
 }
 
@@ -115,42 +112,49 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    Cube kocka;
+    Cube::setData();
+    Cube::setLayout();
 
     Shader objectShader("res\\shaders\\vertex.glsl", "res\\shaders\\fragment.glsl");
 
-    int start = glfwGetTime();
-    int delta;
+    vector<glm::vec3> positions;
+    for (int i = 0; i < 100; i++)
+    {
+        for (int j = 0; j < 100; j++)
+        {
+            positions.push_back(glm::vec3(2 * j, 0.0f, -2 * i));
+        }
+    }
+    TextureLoader::load("res\\textures\\grass_top.jpg", 0);
+    objectShader.setUniformInt("tex0", 0);
+    TextureLoader::load("res\\textures\\grass_side.jpg", 1);
+    objectShader.setUniformInt("tex1", 1);
+    TextureLoader::load("res\\textures\\dirt.jpg", 2);
+    objectShader.setUniformInt("tex2", 2);
+
+    Chunk World[4];
+    for (int i = 0; i < 4; i++)
+    {
+        World[i] = Chunk(glm::vec3(0.0f, i * 1.0f, 0.0f));
+    }
 
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        //if (deltaTime < 1.0 / maxFPS) continue;
+        if (deltaTime < 1.0 / maxFPS) continue;
         lastFrame = currentFrame;
         fpsCounter();
         glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
+        
         objectShader.bind();
         objectShader.resetModelMatrix();
         objectShader.setUniformMatrix("projection", projection);
         objectShader.setUniformMatrix("view", camera.getView());
-        double color = 0;
-        for (int i = 0; i < 100; i++)
-        {
-            for (int j = 0; j < 100; j++)
-            {
-                objectShader.setUniformVec3("color", glm::vec3(0.01+color, 0.5+color/2, 0.1+color/3));
-                objectShader.resetModelMatrix();
-                objectShader.updateModelMatrix(Shader::translate, glm::vec3(2 * j, 0.0f, -2 * i));
-                kocka.draw();
-                
-                color += abs(sin(glfwGetTime()*cos(glfwGetTime())));
-                if (color >= 1.0) color = 0;
-            }
-        }
+
+        Cube::draw();
+        
         
         processInput(window);
         glfwSwapBuffers(window);

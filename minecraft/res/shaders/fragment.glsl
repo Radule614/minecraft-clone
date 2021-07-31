@@ -3,10 +3,14 @@ out vec4 outColor;
 
 in vec3 normal;
 in vec2 texCoord;
-in vec3 fragPos;
+in flat float texNum;
 
-uniform vec3 color;
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform sampler2D tex2;
 
 void main(){
-	outColor = vec4(color, 1.0);
+	if(texNum == 0) outColor = texture(tex0, texCoord);
+	if(texNum == 1) outColor = texture(tex1, texCoord);
+	if(texNum == 2) outColor = texture(tex2, texCoord);
 }

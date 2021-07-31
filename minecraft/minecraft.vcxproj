@@ -143,17 +143,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\cube.cpp" />
+    <ClCompile Include="src\quad.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\chunk.h" />
     <ClInclude Include="src\cube.h" />
     <ClInclude Include="src\globals.h" />
     <ClInclude Include="src\quad.h" />
     <ClInclude Include="src\reader.h" />
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\stb_image.h" />
-    <ClInclude Include="src\tex.h" />
+    <ClInclude Include="src\texture_loader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
