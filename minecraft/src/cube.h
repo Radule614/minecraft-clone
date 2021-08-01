@@ -5,15 +5,6 @@
 
 #include "quad.h"
 
-using namespace std;
-
-struct Texture {
-	unsigned int id;
-	string path;
-};
-
-static vector<Texture> loaded_textures;
-
 class Cube {
 public:
 	enum Type {
@@ -21,38 +12,67 @@ public:
 		DIRT,
 		GRASS
 	};
-
-	struct Vertex {
-		glm::vec3 position;
-		glm::vec3 normal;
-		glm::vec2 texCoord;
-		float textureNumber;
-	};
-
 	Type type;
 	glm::vec3 position;
 
-	static unsigned int VA;
-	static unsigned int VB;
-	static unsigned int VE;
-	static unsigned int instanceVB;
-
-	static vector<Vertex> vertices;
-	static vector<unsigned int> indices;
-	static vector<glm::vec3> positions;
-
 	Cube() {}
-	Cube(Type t)
+	Cube(Type t, glm::vec3 pos)
 	{
+		setPosition(pos);
 		this->type = t;
 	}
 
-	static void setData();
-	static void setLayout();
-	
-	static void setPositions();
-	static void draw();
+	void setPosition(glm::vec3 pos)
+	{
+		position = pos;
+	}
+
+	static void draw()
+	{
+		for (int i = 0; i < faces.size(); i++)
+		{
+			faces[i].draw();
+		}
+	}
+
+	static void initiateData()
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			Quad tmp((Quad::Face)i);
+			
+			faces.push_back(tmp);
+		}
+	}
+
+	static void drawBlocks(std::vector<Cube>& blocks)
+	{
+		std::vector<Cube>::const_iterator cit;
+		for (cit = blocks.begin(); cit != blocks.end(); ++cit)
+		{
+			positions.push_back(cit->position);
+		}
+	}
+
+	static void drawBlock(Cube& block)
+	{
+		positions.push_back(block.position);
+	}
+
+	static void drawBlockFace(Cube& block, Quad::Face f)
+	{
+		faces[f].positions.push_back(block.position);
+	}
+
+	static void setPositions()
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			faces[i].setPositions();
+		}
+	}
 private:
-	
+	static std::vector<Quad> faces;
+	static std::vector<glm::vec3> positions;
 };
 

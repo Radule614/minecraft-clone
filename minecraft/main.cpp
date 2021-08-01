@@ -10,7 +10,8 @@
 #include "src/texture_loader.h"
 #include "src/shader.h"
 #include "src/globals.h"
-#include "src/chunk.h"
+
+#include "src/world.h"
 
 using namespace std;
 using namespace global;
@@ -108,17 +109,9 @@ int main()
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //rendering data
-    Cube::setData();
-    Cube::setLayout();
+    Cube::initiateData();
+
     Shader objectShader("res\\shaders\\vertex.glsl", "res\\shaders\\fragment.glsl");
-    vector<glm::vec3> positions;
-    for (int i = 0; i < 100; i++)
-    {
-        for (int j = 0; j < 100; j++)
-        {
-            positions.push_back(glm::vec3(2 * j, 0.0f, -2 * i));
-        }
-    }
 
     TextureLoader::load("res\\textures\\grass_top.jpg", 0);
     objectShader.setUniformInt("tex0", 0);
@@ -127,19 +120,8 @@ int main()
     TextureLoader::load("res\\textures\\dirt.jpg", 2);
     objectShader.setUniformInt("tex2", 2);
 
-    vector<Chunk> World;
-    for (int i = 0; i < 16; i++)
-    {
-        for (int j = 0; j < 2; j++)
-        {
-            for (int k = 0; k < 16; k++)
-            {
-                World.push_back(Chunk(glm::vec3(-8.0f + i, -3 + j, -8.0f + k)));
-            }
-        }
-    }
-    Cube::setPositions();
-
+    World world;
+    
     //rendering
     while (!glfwWindowShouldClose(window))
     {
@@ -156,8 +138,8 @@ int main()
         objectShader.setUniformMatrix("projection", projection);
         objectShader.setUniformMatrix("view", camera.getView());
         
-        Cube::draw();
-        
+        World::draw();
+
         processInput(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
