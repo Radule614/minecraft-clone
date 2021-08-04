@@ -75,7 +75,7 @@ void fpsCounter()
         currentFPS = frameNumber;
         lastFpsDisplay = glfwGetTime();
         frameNumber = 0;
-        cout << "FPS: " << currentFPS << endl;
+        //cout << "FPS: " << currentFPS << endl;
     }
 }
 
@@ -107,6 +107,8 @@ int main()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 
     //rendering data
     Cube::initiateData();
@@ -127,7 +129,7 @@ int main()
     {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        if (deltaTime < 1.0 / maxFPS) continue;
+        //if (deltaTime < 1.0 / maxFPS) continue;
         lastFrame = currentFrame;
         fpsCounter();
         glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
@@ -138,7 +140,7 @@ int main()
         objectShader.setUniformMatrix("projection", projection);
         objectShader.setUniformMatrix("view", camera.getView());
         
-        World::draw();
+        world.draw();
 
         processInput(window);
         glfwSwapBuffers(window);

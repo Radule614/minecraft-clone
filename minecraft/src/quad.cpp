@@ -6,8 +6,6 @@ Quad::Quad(Face f)
 {
 	setData(f);
 	setLayout();
-
-	glGenBuffers(1, &instanceVB);
 }
 
 glm::vec2 Quad::textureCoordinates[4] = {
@@ -77,11 +75,12 @@ void Quad::getPositions(Face f, glm::vec3 arr[4])
 	memcpy(arr, positions, sizeof(positions));
 }
 
-void Quad::setData(Face f)
+void Quad::setData(Face& f)
 {
 	indices.clear();
 	vertices.clear();
-	unsigned int faceIndices[] = { 0, 1, 2, 2, 3, 0 };
+	unsigned int faceIndices_cw[] = { 0, 1, 2, 2, 3, 0 };
+	unsigned int faceIndices_acw[] = { 0, 2, 1, 2, 0, 3 };
 	unsigned int offset = 0;
 	unsigned int texture;
 	if (f == Quad::Face::TOP)
@@ -113,9 +112,19 @@ void Quad::setData(Face f)
 		temp.textureNumber = texture;
 		vertices.push_back(temp);
 	}
-	for (int j = 0; j < 6; j++)
+	if (f == Quad::Face::TOP || f == Quad::Face::LEFT || f == Quad::Face::FRONT || f == Quad::Face::RIGHT)
 	{
-		indices.push_back(faceIndices[j]);
+		for (int j = 0; j < 6; j++)
+		{
+			indices.push_back(faceIndices_cw[j]);
+		}
+	}
+	else
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			indices.push_back(faceIndices_acw[j]);
+		}
 	}
 }
 
@@ -145,9 +154,10 @@ void Quad::setLayout()
 	glBindVertexArray(0);
 }
 
-void Quad::setPositions()
+unsigned int Quad::initPositions(std::vector<glm::vec3>& positions)
 {
-	if (positions.size() == 0) return;
+	glGenBuffers(1, &instanceVB);
+	positionBuffers.push_back({ instanceVB, positions.size() });
 
 	glBindVertexArray(VA);
 	
@@ -158,11 +168,36 @@ void Quad::setPositions()
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glVertexAttribDivisor(4, 1);
 	glBindVertexArray(0);
+
+	return instanceVB;
 }
 
-void Quad::draw()
+Quad::Positions& Quad::findPositions(unsigned int& id)
+{
+	for (int i = 0; i < positionBuffers.size(); i++)
+	{
+		if (positionBuffers[i].id == id)
+		{
+			return positionBuffers[i];
+		}
+	}
+}
+
+void Quad::setPositionData(Positions& pos)
 {
 	glBindVertexArray(VA);
-	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, positions.size());
+	glBindBuffer(GL_ARRAY_BUFFER, pos.id);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribDivisor(4, 1);
+}
+
+void Quad::draw(unsigned int positionsId)
+{
+	Positions& pos = findPositions(positionsId);
+
+	glBindVertexArray(VA);
+	setPositionData(pos);
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, pos.size);
 	glBindVertexArray(0);
 }

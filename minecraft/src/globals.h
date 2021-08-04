@@ -4,6 +4,11 @@
 #include "glm/glm.hpp"
 #include "Camera.h"
 
+#define PI 3.1415926
+
+#define CHUNK_SIZE 16
+#define CHUNK_SPAWN_RADIUS 4
+
 namespace global {
 	const unsigned int maxFPS = 210;
 	unsigned int screenWidth = 1600;

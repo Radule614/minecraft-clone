@@ -34,6 +34,11 @@ public:
 		float textureNumber;
 	};
 
+	struct Positions {
+		unsigned int id;
+		unsigned int size;
+	};
+
 	unsigned int VA;
 	unsigned int VB;
 	unsigned int VE;
@@ -41,13 +46,15 @@ public:
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<glm::vec3> positions;
+	std::vector<Positions> positionBuffers;
 
-	void setData(Face f);
+	void setData(Face& f);
 	void setLayout();
+	unsigned int initPositions(std::vector<glm::vec3>& positions);
+	Positions& findPositions(unsigned int& id);
+	void setPositionData(Positions& pos);
 
-	void setPositions();
-	void draw();
+	void draw(unsigned int positionsId);
 
 	static glm::vec2 textureCoordinates[4];
 	static glm::vec3 getNormal(Face f);

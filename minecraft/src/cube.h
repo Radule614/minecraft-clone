@@ -27,11 +27,11 @@ public:
 		position = pos;
 	}
 
-	static void draw()
+	static void draw(unsigned int& id)
 	{
 		for (int i = 0; i < faces.size(); i++)
 		{
-			faces[i].draw();
+			faces[i].draw(id);
 		}
 	}
 
@@ -59,20 +59,8 @@ public:
 		positions.push_back(block.position);
 	}
 
-	static void drawBlockFace(Cube& block, Quad::Face f)
-	{
-		faces[f].positions.push_back(block.position);
-	}
-
-	static void setPositions()
-	{
-		for (int i = 0; i < 6; i++)
-		{
-			faces[i].setPositions();
-		}
-	}
-private:
 	static std::vector<Quad> faces;
+private:
 	static std::vector<glm::vec3> positions;
 };
 
