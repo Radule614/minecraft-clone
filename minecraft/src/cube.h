@@ -40,7 +40,6 @@ public:
 		for (int i = 0; i < 6; i++)
 		{
 			Quad tmp((Quad::Face)i);
-			
 			faces.push_back(tmp);
 		}
 	}

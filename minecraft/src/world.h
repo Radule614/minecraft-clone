@@ -1,6 +1,7 @@
 #pragma once
 
 #include <math.h>
+
 #include "globals.h"
 
 #include "chunk.h"
@@ -24,28 +25,33 @@ public:
     }
 
 	void chunkGenerator()
-	{
-        glm::vec2 cameraPos = glm::vec2(camera.front.x, camera.front.z);
-        glm::vec2 pos = glm::vec2(0.0f, 0.0f);
-        //cout << glm::distance(cameraPos, glm::vec2(5.0f, 2.0f)) << endl;
+	{   
+        glm::vec2 pos;
+        
         unsigned int radius = 0;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             chunks.push_back(vector<vector<Chunk>>());
             for (int j = 0; j < 2; j++)
             {
                 chunks[i].push_back(vector<Chunk>());
-                for (int k = 0; k < 4; k++)
+                for (int k = 0; k < 5; k++)
                 {
-                    
-                    pos = findAvailablePosition(cameraPos);
-
+                    if (j == 0)
+                    {
+                        pos = findAvailablePosition();
+                    }
+                    else
+                    {
+                        pos = glm::vec2(chunks[i][0][k].position.x, chunks[i][0][k].position.z);
+                    }
                     if (j == 1)
                     {
                         generateHeightMap();
                     }
-                    chunks[i][j].push_back(Chunk(glm::vec3(0.0f + i, -2 + j, -0.0f + k), heightMap));
-                    chunkPositions.push_back(glm::vec3(0.0f + i, -2 + j, -0.0f + k));
+
+                    chunks[i][j].push_back(Chunk(glm::vec3(pos.x, -2 + j, pos.y), heightMap));
+                    chunkPositions.push_back(glm::vec3(pos.x, -2 + j, pos.y));
                     heightMapReset();
                 }
             }
@@ -74,12 +80,33 @@ public:
         }
     }
 
-    glm::vec3 findAvailablePosition(glm::vec2& cameraPos)
+    bool chunkExists(glm::vec2& pos)
     {
-        unsigned int radius = 0;
-        
+        for (int i = 0; i < chunkPositions.size(); i++)
+        {
+            if (pos.x == chunkPositions[i].x && pos.y == chunkPositions[i].z) return true;
+        }
+        return false;
+    }
 
-        return glm::vec3();
+    glm::vec2 findAvailablePosition()
+    {
+        glm::vec2 cameraPos = glm::vec2((int)(camera.position.x/16.0), (int)(camera.position.z/16.0));
+        glm::vec2 temp;
+        int radius = 0;
+        while (radius != CHUNK_SPAWN_RADIUS)
+        {
+            for (int i = -radius; i <= radius; i++)
+            {
+                for (int j = -radius; j <= radius; j++)
+                {
+                    temp = glm::vec2(cameraPos.x + i, cameraPos.y + j);
+                    if (!chunkExists(temp)) return temp;
+                }
+            }
+            radius++;
+        }
+        return glm::vec2();
     }
 
     //TODO

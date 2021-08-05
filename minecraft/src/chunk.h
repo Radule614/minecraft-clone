@@ -102,9 +102,10 @@ public:
 				}
 			}
 		}
-		for (int i = 0; i < Cube::faces.size(); i++)
+		int temp = 0;
+		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
 		{
-			positionBufferIDs.push_back(Cube::faces[i].initPositions(facePositions[i]));
+			positionBufferIDs.push_back(it->initPositions(facePositions[temp]));
 		}
 	}
 
@@ -131,9 +132,10 @@ public:
 
 	void setPositions()
 	{
-		for (int i = 0; i < Cube::faces.size(); i++)
+		int temp = 0;
+		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
 		{
-			Cube::faces[i].draw(positionBufferIDs[i]);
+			it->draw(positionBufferIDs[temp]);
 		}
 	}
 

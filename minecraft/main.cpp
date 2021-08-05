@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 
 #include "src/texture_loader.h"
@@ -123,7 +124,7 @@ int main()
     objectShader.setUniformInt("tex2", 2);
 
     World world;
-    
+
     //rendering
     while (!glfwWindowShouldClose(window))
     {
