@@ -4,25 +4,25 @@
 
 class Chunk {
 public:
-	Chunk(glm::vec3 pos, vector<vector<int>>& heightMap) : position(pos)
+	Chunk(glm::vec3 pos, vector<vector<int>>& heightMap) : position(pos), frontNeighbor(nullptr), backNeighbor(nullptr), rightNeighbor(nullptr), leftNeighbor(nullptr)
 	{
 		for (int i = 0; i < 6; i++)
 		{
 			facePositions.push_back(vector<glm::vec3>());
 		}
 
-		for (int i = 0; i < CHUNK_SIZE; i++)
+		for (int i = 0; i < CHUNK_SIZE_X; i++)
 		{
 			blocks.push_back(vector<vector<Cube>>());
-			for (int j = 0; j < CHUNK_SIZE; j++)
+			for (int j = 0; j < CHUNK_SIZE_Y; j++)
 			{
 				blocks[i].push_back(vector<Cube>());
-				for (int k = 0; k < CHUNK_SIZE; k++)
+				for (int k = 0; k < CHUNK_SIZE_Z; k++)
 				{
 					int x, y, z;
-					x = 2 * (position.x * CHUNK_SIZE + i);
-					y = 2 * (position.y * CHUNK_SIZE + j);
-					z = 2 * (position.z * CHUNK_SIZE + k);
+					x = 2 * (position.x * CHUNK_SIZE_X + i);
+					y = 2 * (position.y * CHUNK_SIZE_Y + j);
+					z = 2 * (position.z * CHUNK_SIZE_Z + k);
 					blocks[i][j].push_back(Cube());
 					blocks[i][j][k].position = glm::vec3(x, y, -z);
 
@@ -42,87 +42,58 @@ public:
 
 	void determineBlocksToDraw()
 	{
-		for (int i = 0; i < CHUNK_SIZE; i++)
+		for (int i = 0; i < CHUNK_SIZE_X; i++)
 		{
-			for (int j = 0; j < CHUNK_SIZE; j++)
+			for (int j = 0; j < CHUNK_SIZE_Y; j++)
 			{
-				for (int k = 0; k < CHUNK_SIZE; k++)
+				for (int k = 0; k < CHUNK_SIZE_Z; k++)
 				{
 					Cube& current = blocks[i][j][k];
-					if (current.type == Cube::AIR) continue;
-					if (i == 0 || j == 0 || k == 0 || i == CHUNK_SIZE - 1 || j == CHUNK_SIZE - 1 || k == CHUNK_SIZE - 1)
-					{
-						if (i == 0) drawBlockFace(current, Quad::LEFT);
-						if (j == 0) drawBlockFace(current, Quad::BOTTOM);
-						if (k == 0) drawBlockFace(current, Quad::FRONT);
-						if (i == CHUNK_SIZE - 1) drawBlockFace(current, Quad::RIGHT);
-						if (j == CHUNK_SIZE - 1) drawBlockFace(current, Quad::TOP);
-						if (k == CHUNK_SIZE - 1) drawBlockFace(current, Quad::BACK);
-					}
-
+					if (current.type != Cube::AIR) continue;
 					if (i == 0)
 					{
-						if(blocks[i + 1][j][k].type == Cube::AIR) drawBlockFace(current, Quad::RIGHT);
+						if (blocks[i + 1][j][k].type != Cube::AIR) drawBlockFace(blocks[i + 1][j][k], Quad::LEFT);
 					}
-					else if(i == CHUNK_SIZE - 1)
+					else if (i == CHUNK_SIZE_X - 1)
 					{
-						if(blocks[i - 1][j][k].type == Cube::AIR) drawBlockFace(current, Quad::LEFT);
+						if (blocks[i - 1][j][k].type != Cube::AIR) drawBlockFace(blocks[i - 1][j][k], Quad::RIGHT);
 					}
-					else if (blocks[i - 1][j][k].type == Cube::AIR || blocks[i + 1][j][k].type == Cube::AIR)
+					else if (blocks[i - 1][j][k].type != Cube::AIR || blocks[i + 1][j][k].type != Cube::AIR)
 					{
-						if (blocks[i - 1][j][k].type == Cube::AIR) drawBlockFace(current, Quad::LEFT);
-						if (blocks[i + 1][j][k].type == Cube::AIR) drawBlockFace(current, Quad::RIGHT);
+						if (blocks[i - 1][j][k].type != Cube::AIR) drawBlockFace(blocks[i - 1][j][k], Quad::RIGHT);
+						if (blocks[i + 1][j][k].type != Cube::AIR) drawBlockFace(blocks[i + 1][j][k], Quad::LEFT);
 					}
+
 					if (j == 0)
 					{
-						if(blocks[i][j + 1][k].type == Cube::AIR) drawBlockFace(current, Quad::TOP);
+						if (blocks[i][j + 1][k].type != Cube::AIR) drawBlockFace(blocks[i][j + 1][k], Quad::BOTTOM);
 					}
-					else if (j == CHUNK_SIZE - 1)
+					else if (j == CHUNK_SIZE_Y - 1)
 					{
-						if(blocks[i][j - 1][k].type == Cube::AIR) drawBlockFace(current, Quad::BOTTOM);
+						if (blocks[i][j - 1][k].type != Cube::AIR) drawBlockFace(blocks[i][j - 1][k], Quad::TOP);
 					}
-					else if (blocks[i][j - 1][k].type == Cube::AIR || blocks[i][j + 1][k].type == Cube::AIR)
+					else if (blocks[i][j - 1][k].type != Cube::AIR || blocks[i][j + 1][k].type != Cube::AIR)
 					{
-						if (blocks[i][j - 1][k].type == Cube::AIR) drawBlockFace(current, Quad::BOTTOM);
-						if (blocks[i][j + 1][k].type == Cube::AIR) drawBlockFace(current, Quad::TOP);
+						if (blocks[i][j - 1][k].type != Cube::AIR) drawBlockFace(blocks[i][j - 1][k], Quad::TOP);
+						if (blocks[i][j + 1][k].type != Cube::AIR) drawBlockFace(blocks[i][j + 1][k], Quad::BOTTOM);
 					}
+
 					if (k == 0)
 					{
-						if(blocks[i][j][k + 1].type == Cube::AIR) drawBlockFace(current, Quad::BACK);
+						if (blocks[i][j][k + 1].type != Cube::AIR) drawBlockFace(blocks[i][j][k + 1], Quad::FRONT);
 					}
-					else if (k == CHUNK_SIZE - 1)
+					else if (k == CHUNK_SIZE_Z - 1)
 					{
-						if(blocks[i][j][k - 1].type == Cube::AIR) drawBlockFace(current, Quad::FRONT);
+						if (blocks[i][j][k - 1].type != Cube::AIR) drawBlockFace(blocks[i][j][k - 1], Quad::BACK);
 					}
-					else if (blocks[i][j][k - 1].type == Cube::AIR || blocks[i][j][k + 1].type == Cube::AIR)
+					else if (blocks[i][j][k - 1].type != Cube::AIR || blocks[i][j][k + 1].type != Cube::AIR)
 					{
-						if (blocks[i][j][k - 1].type == Cube::AIR) drawBlockFace(current, Quad::FRONT);
-						if (blocks[i][j][k + 1].type == Cube::AIR) drawBlockFace(current, Quad::BACK);	
+						if (blocks[i][j][k - 1].type != Cube::AIR) drawBlockFace(blocks[i][j][k - 1], Quad::BACK);
+						if (blocks[i][j][k + 1].type != Cube::AIR) drawBlockFace(blocks[i][j][k + 1], Quad::FRONT);
 					}
 				}
 			}
 		}
-		int temp = 0;
-		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
-		{
-			positionBufferIDs.push_back(it->initPositions(facePositions[temp]));
-		}
-	}
-
-	void getEdgeBlocksX(vector<vector<Cube>>& first, vector<vector<Cube>>& last)
-	{
-		first = blocks[0];
-		last = blocks[CHUNK_SIZE - 1];
-	}
-
-	void getEdgeBlocksY(vector<vector<Cube>>& first, vector<vector<Cube>>& last)
-	{
-
-	}
-
-	void getEdgeBlocksZ(vector<vector<Cube>>& first, vector<vector<Cube>>& last)
-	{
-
 	}
 
 	void drawBlockFace(Cube& block, Quad::Face f)
@@ -143,11 +114,44 @@ public:
 	{
 		setPositions();
 	}
+
+	void clear()
+	{
+		for (int i = 0; i < blocks.size(); i++)
+		{
+			for (int j = 0; j < blocks[i].size(); j++)
+			{
+				blocks[i][j] = vector<Cube>();
+			}
+			blocks[i] = vector<vector<Cube>>();
+		}
+		blocks = vector<vector<vector<Cube>>>();
+		blocksToDraw.clear();
+		for (int i = 0; i < facePositions.size(); i++)
+		{
+			facePositions[i].clear();
+		}
+		facePositions.clear();
+
+		int temp = 0;
+		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
+		{
+			it->clearPositionBuffer(positionBufferIDs[temp]);
+		}
+		positionBufferIDs.clear();
+	}
 	
 	vector<vector<vector<Cube>>> blocks;
 	glm::vec3 position;
+	glm::vec3 gridPosition;
 	vector<Cube> blocksToDraw;
-private:
+
+	
+	Chunk* frontNeighbor;
+	Chunk* backNeighbor;
+	Chunk* leftNeighbor;
+	Chunk* rightNeighbor;
 	vector<vector<glm::vec3>> facePositions;
 	vector<unsigned int> positionBufferIDs;
+private:
 };

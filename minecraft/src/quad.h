@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include <GLEW/glew.h>
 #include <glm/glm.hpp>
@@ -15,7 +16,7 @@ static std::vector<Texture> loaded_textures;
 
 class Quad {
 public:
-	enum Face 
+	enum Face
 	{
 		FRONT = 0,
 		BACK,
@@ -52,6 +53,7 @@ public:
 	void setLayout();
 	unsigned int initPositions(std::vector<glm::vec3>& positions);
 	Positions& findPositions(unsigned int& id);
+	void clearPositionBuffer(unsigned int& id);
 	void setPositionData(Positions& pos);
 
 	void draw(unsigned int positionsId);
@@ -60,4 +62,3 @@ public:
 	static glm::vec3 getNormal(Face f);
 	static void getPositions(Face f, glm::vec3 arr[4]);
 };
-

@@ -13,9 +13,9 @@ public:
 	glm::vec3 up;
 	float sensitivity;
 	float speed;
-	Camera() : pitch(0.0f), yaw(-90.0f), sensitivity(0.1f), speed(0)
+	Camera(glm::vec3 pos = glm::vec3(0.0f)) : pitch(0.0f), yaw(-90.0f), sensitivity(0.1f), speed(0)
 	{
-		position = glm::vec3(0.0f, 0.0f, 10.0f);
+		position = pos;
 		front = glm::vec3(0.0f, 0.0f, -1.0f);
 		up = glm::vec3(0.0, 1.0f, 0.0f);
 	}

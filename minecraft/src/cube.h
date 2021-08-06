@@ -22,7 +22,7 @@ public:
 		this->type = t;
 	}
 
-	void setPosition(glm::vec3 pos)
+	void setPosition(glm::vec3& pos)
 	{
 		position = pos;
 	}
