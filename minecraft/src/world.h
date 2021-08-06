@@ -1,10 +1,9 @@
 #pragma once
 
 #include <math.h>
-#include <list>
+#include "perlinNoise.hpp"
 
 #include "globals.h"
-
 #include "chunk.h"
 
 using namespace global;
@@ -12,8 +11,10 @@ using namespace global;
 class World 
 {
 public:
-    World()
+    World(unsigned int seed = 2222) : seed(seed), worldSize(24), frequency(2.0), octaves(16)
     {
+        noiseGenerator = siv::PerlinNoise(seed);
+
         for (int i = 0; i < CHUNK_SIZE_X; i++)
         {
             heightMap.push_back(vector<int>());
@@ -44,17 +45,16 @@ public:
 	{   
         glm::vec2 pos;
         unsigned int radius = 0;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < worldSize; i++)
         {
             chunks.push_back(vector<vector<Chunk*>>());
             chunks[i].push_back(vector<Chunk*>());
-            for (int k = 0; k < 10; k++)
+            for (int k = 0; k < worldSize; k++)
             {
                 pos = glm::vec2(i, k);
                     
                     
-                if(i==3 && k==3) generateHeightMap(40);
-                else generateHeightMap();
+                generateHeightMap(i, k);
                     
                 chunks[i][0].push_back(new Chunk(glm::vec3(pos.x, -1, pos.y), heightMap));
                 chunks[i][0][k]->gridPosition = glm::vec3(i, 0, k);
@@ -137,20 +137,16 @@ public:
         }
     }
 
-    void generateHeightMap(int h = -1)
+    void generateHeightMap(int gridPosX, int gridPosZ)
     {
-        for (int i = 0; i < CHUNK_SIZE_X; i++)
+        double offsetX = (int)CHUNK_SIZE_X * gridPosX ;
+        double offsetY = (int)CHUNK_SIZE_Z * gridPosZ ;
+
+        for (unsigned int x = 0; x < CHUNK_SIZE_X; x++)
         {
-            for (int j = 0; j < CHUNK_SIZE_Z; j++)
+            for (unsigned int y = 0; y < CHUNK_SIZE_Z; y++)
             {
-                if (h != -1)
-                {
-                    heightMap[i][j] = h;
-                }
-                else
-                {
-                    heightMap[i][j] = 5 + 2 *sin((i * j));
-                }
+                heightMap[x][y] = (CHUNK_SIZE_Y-8) * noiseGenerator.accumulatedOctaveNoise2D_0_1((x + offsetX) / fx, (y + offsetY) / fy, octaves);
             }
         }
     }
@@ -215,4 +211,12 @@ private:
 
     vector<glm::vec3> chunkPositions;
     glm::vec2 cameraChunkLocation;
+    
+    siv::PerlinNoise noiseGenerator;
+    unsigned int seed;
+    unsigned int worldSize;
+    double frequency;
+    unsigned int octaves;
+    const double fx = (int)CHUNK_SIZE_X * worldSize  / frequency;
+    const double fy = (int)CHUNK_SIZE_Z * worldSize   / frequency;
 };

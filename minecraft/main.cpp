@@ -31,7 +31,7 @@ void processInput(GLFWwindow* window)
     {
         glfwSetWindowShouldClose(window, true);
     }
-    camera.speed = 50.0f * deltaTime;
+    camera.speed = 200.0f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         camera.position += camera.speed * glm::normalize(camera.front);
@@ -133,7 +133,8 @@ int main()
         //if (deltaTime < 1.0 / maxFPS) continue;
         lastFrame = currentFrame;
         fpsCounter();
-        glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
+        //glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
+        glClearColor(0.3961f, 0.7608f, 96.08f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         objectShader.bind();
