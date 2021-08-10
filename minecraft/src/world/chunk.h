@@ -1,29 +1,37 @@
 #pragma once
 
-#include "cube.h"
+using namespace std;
+
+#include "../model/cube.h"
 
 class Chunk {
 public:
 	Chunk(glm::vec3 pos, vector<vector<int>>& heightMap) : position(pos), frontNeighbor(nullptr), backNeighbor(nullptr), rightNeighbor(nullptr), leftNeighbor(nullptr)
 	{
+		facePositions.reserve(6);
+		faceData.reserve(6);
 		for (int i = 0; i < 6; i++)
 		{
-			facePositions.push_back(vector<glm::vec3>());
+			facePositions.emplace_back(vector<glm::vec3>());
+			faceData.emplace_back(vector<Quad::InstanceData>());
 		}
 
+		blocks.reserve(CHUNK_SIZE_X);
 		for (int i = 0; i < CHUNK_SIZE_X; i++)
 		{
-			blocks.push_back(vector<vector<Cube>>());
+			blocks.emplace_back(vector<vector<Cube>>());
+			blocks[i].reserve(CHUNK_SIZE_Y);
 			for (int j = 0; j < CHUNK_SIZE_Y; j++)
 			{
-				blocks[i].push_back(vector<Cube>());
+				blocks[i].emplace_back(vector<Cube>());
+				blocks[i][j].reserve(CHUNK_SIZE_Z);
 				for (int k = 0; k < CHUNK_SIZE_Z; k++)
 				{
 					int x, y, z;
 					x = 2 * (position.x * CHUNK_SIZE_X + i);
 					y = 2 * (position.y * CHUNK_SIZE_Y + j);
 					z = 2 * (position.z * CHUNK_SIZE_Z + k);
-					blocks[i][j].push_back(Cube());
+					blocks[i][j].emplace_back(Cube());
 					blocks[i][j][k].position = glm::vec3(x, y, -z);
 
 					if (heightMap[i][k] >= j)
@@ -38,6 +46,10 @@ public:
 			}
 		}
 		determineBlocksToDraw();
+		for (int r = 0; r < Cube::faces.size(); r++)
+		{
+			instanceBufferIDs.push_back(Cube::faces[r].initInstances(faceData[r]));
+		}
 	}
 
 	void determineBlocksToDraw()
@@ -98,21 +110,25 @@ public:
 
 	void drawBlockFace(Cube& block, Quad::Face f)
 	{
-		facePositions[f].push_back(block.position);
+		faceData[f].push_back({ Cube::textureIds[block.type][f], block.position});
 	}
 
-	void setPositions()
+	void updatePositions()
 	{
-		int temp = 0;
-		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
+		for (int r = 0; r < Cube::faces.size(); r++)
 		{
-			it->draw(positionBufferIDs[temp]);
+			Cube::faces[r].updateInstanceData(instanceBufferIDs[r], faceData[r]);
 		}
 	}
 
 	void draw()
 	{
-		setPositions();
+		int temp = 0;
+		if (instanceBufferIDs.empty()) return;
+		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
+		{
+			it->drawInstanced(instanceBufferIDs[temp]);
+		}
 	}
 
 	void clear()
@@ -127,31 +143,32 @@ public:
 		}
 		blocks = vector<vector<vector<Cube>>>();
 		blocksToDraw.clear();
-		for (int i = 0; i < facePositions.size(); i++)
+		for (int i = 0; i < faceData.size(); i++)
 		{
-			facePositions[i].clear();
+			faceData[i].clear();
 		}
-		facePositions.clear();
+		faceData.clear();
 
 		int temp = 0;
 		for (auto it = Cube::faces.begin(); it != Cube::faces.end(); it++, temp++)
 		{
-			it->clearPositionBuffer(positionBufferIDs[temp]);
+			it->clearPositionBuffer(instanceBufferIDs[temp]);
 		}
-		positionBufferIDs.clear();
+		instanceBufferIDs.clear();
 	}
 	
 	vector<vector<vector<Cube>>> blocks;
 	glm::vec3 position;
 	glm::vec3 gridPosition;
 	vector<Cube> blocksToDraw;
-
 	
 	Chunk* frontNeighbor;
 	Chunk* backNeighbor;
 	Chunk* leftNeighbor;
 	Chunk* rightNeighbor;
 	vector<vector<glm::vec3>> facePositions;
-	vector<unsigned int> positionBufferIDs;
+	vector<unsigned int> instanceBufferIDs;
+
+	vector<vector<Quad::InstanceData>> faceData;
 private:
 };

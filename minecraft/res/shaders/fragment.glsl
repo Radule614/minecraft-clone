@@ -4,24 +4,18 @@ out vec4 outColor;
 in vec3 normal;
 in vec2 texCoord;
 in vec3 fragCoord;
-in flat float texNum;
 
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform sampler2D tex2;
+uniform sampler2D atlas;
 
 void main(){
 	vec4 texColor;
-
-	if(texNum == 0) texColor = texture(tex0, texCoord);
-	if(texNum == 1) texColor = texture(tex1, texCoord);
-	if(texNum == 2) texColor = texture(tex2, texCoord);
+	texColor = texture(atlas, texCoord);
 
 	vec3 lightColor = vec3(1);
-	vec3 lightDir = normalize(vec3(1, 1, 1));
+	vec3 lightDir = normalize(vec3(1, 2, 1));
 	
 	
-	float ambientStrength = 0.4;
+	float ambientStrength = 0.5;
 	vec3 ambient = ambientStrength * lightColor;
 
 
@@ -29,6 +23,5 @@ void main(){
 	vec3 diffuse = diff * lightColor;
 
 	vec3 result = (ambient + diffuse) * vec3(texColor);
-	outColor = vec4(result, 1.0);
-
+	outColor = vec4(result, texColor.w);
 }

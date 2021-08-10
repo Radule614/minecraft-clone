@@ -1,9 +1,9 @@
 #pragma once
 
 #include <math.h>
-#include "perlinNoise.hpp"
+#include "../utility/perlinNoise.hpp"
 
-#include "globals.h"
+#include "../globals.h"
 #include "chunk.h"
 
 using namespace global;
@@ -11,7 +11,7 @@ using namespace global;
 class World 
 {
 public:
-    World(unsigned int seed = 2222) : seed(seed), worldSize(24), frequency(2.0), octaves(16)
+    World(unsigned int seed = 1252) : seed(seed), worldSize(34), frequency(1.4), octaves(8)
     {
         noiseGenerator = siv::PerlinNoise(seed);
 
@@ -24,21 +24,6 @@ public:
             }
         }
         chunkGenerator();
-
-        for (int i = 0; i < chunks.size(); i++)
-        {
-            for (int j = 0; j < chunks[i].size(); j++)
-            {
-                for (int k = 0; k < chunks[i][j].size(); k++)
-                {
-                    for (int r = 0; r < Cube::faces.size(); r++)
-                    {
-                        Chunk& chunk = *chunks[i][j][k];
-                        chunk.positionBufferIDs.push_back(Cube::faces[r].initPositions(chunk.facePositions[r]));
-                    }
-                }
-            }
-        }
     }
 
 	void chunkGenerator()
@@ -52,8 +37,7 @@ public:
             for (int k = 0; k < worldSize; k++)
             {
                 pos = glm::vec2(i, k);
-                    
-                    
+                
                 generateHeightMap(i, k);
                     
                 chunks[i][0].push_back(new Chunk(glm::vec3(pos.x, -1, pos.y), heightMap));
@@ -94,6 +78,9 @@ public:
     {
         Chunk* frontNeighbor = chunk->frontNeighbor;
         Chunk* leftNeighbor = chunk->leftNeighbor;
+        bool chunkChanged = false;
+        bool frontChanged = false;
+        bool leftChanged = false;
         for (int i = 0; i < CHUNK_SIZE_X; i++)
         {
             for (int j = 0; j < CHUNK_SIZE_Y; j++)
@@ -106,10 +93,12 @@ public:
                     if (current.type == Cube::AIR && neighbor.type != Cube::AIR)
                     {
                         frontNeighbor->drawBlockFace(neighbor, Quad::BACK);
+                        frontChanged = true;
                     }
                     if (neighbor.type == Cube::AIR && current.type != Cube::AIR)
                     {
                         chunk->drawBlockFace(current, Quad::FRONT);
+                        chunkChanged = true;
                     }
                 }
             }
@@ -126,21 +115,25 @@ public:
                     if (current.type == Cube::AIR && neighbor.type != Cube::AIR)
                     {
                         leftNeighbor->drawBlockFace(neighbor, Quad::RIGHT);
-
+                        leftChanged = true;
                     }
                     if (neighbor.type == Cube::AIR && current.type != Cube::AIR)
                     {
                         chunk->drawBlockFace(current, Quad::LEFT);
+                        chunkChanged = true;
                     }
                 }
             }
         }
+        if (chunkChanged) chunk->updatePositions();
+        if (leftChanged && leftNeighbor != nullptr) leftNeighbor->updatePositions();
+        if (frontChanged && frontNeighbor != nullptr) frontNeighbor->updatePositions();
     }
 
     void generateHeightMap(int gridPosX, int gridPosZ)
     {
-        double offsetX = (int)CHUNK_SIZE_X * gridPosX ;
-        double offsetY = (int)CHUNK_SIZE_Z * gridPosZ ;
+        int offsetX = (int)(CHUNK_SIZE_X) * gridPosX ;
+        int offsetY = (int)(CHUNK_SIZE_Z) * gridPosZ ;
 
         for (unsigned int x = 0; x < CHUNK_SIZE_X; x++)
         {
@@ -217,6 +210,6 @@ private:
     unsigned int worldSize;
     double frequency;
     unsigned int octaves;
-    const double fx = (int)CHUNK_SIZE_X * worldSize  / frequency;
-    const double fy = (int)CHUNK_SIZE_Z * worldSize   / frequency;
+    const double fx = (int)(CHUNK_SIZE_X) * worldSize / frequency;
+    const double fy = (int)(CHUNK_SIZE_Z) * worldSize / frequency;
 };

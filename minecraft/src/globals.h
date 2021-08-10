@@ -2,12 +2,14 @@
 #define GLOBALS_H
 
 #include "glm/glm.hpp"
-#include "Camera.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "camera.h"
 
 #define PI 3.1415926
 
 #define CHUNK_SIZE_X 16
-#define CHUNK_SIZE_Y 64
+#define CHUNK_SIZE_Y 128
 #define CHUNK_SIZE_Z 16
 #define CHUNK_SPAWN_RADIUS 4
 

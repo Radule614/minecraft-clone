@@ -81,20 +81,7 @@ void Quad::setData(Face& f)
 	vertices.clear();
 	unsigned int faceIndices_cw[] = { 0, 1, 2, 2, 3, 0 };
 	unsigned int faceIndices_acw[] = { 0, 2, 1, 2, 0, 3 };
-	unsigned int offset = 0;
-	unsigned int texture;
-	if (f == Quad::Face::TOP)
-	{
-		texture = 0;
-	}
-	else if (f == Quad::Face::BOTTOM)
-	{
-		texture = 2;
-	}
-	else
-	{
-		texture = 1;
-	}
+
 	glm::vec3 vertexPositions[4];
 	Quad::getPositions(f, vertexPositions);
 	glm::vec3 normal = Quad::getNormal(f);
@@ -107,11 +94,12 @@ void Quad::setData(Face& f)
 		temp.normal.x = normal.x;
 		temp.normal.y = normal.y;
 		temp.normal.z = normal.z;
+
 		temp.texCoord.x = Quad::textureCoordinates[j].x;
 		temp.texCoord.y = Quad::textureCoordinates[j].y;
-		temp.textureNumber = texture;
 		vertices.push_back(temp);
 	}
+
 	if (f == Quad::Face::TOP || f == Quad::Face::LEFT || f == Quad::Face::FRONT || f == Quad::Face::RIGHT)
 	{
 		for (int j = 0; j < 6; j++)
@@ -148,76 +136,101 @@ void Quad::setLayout()
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Quad::Vertex::normal)));
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Quad::Vertex::texCoord)));
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Quad::Vertex::textureNumber)));
 
 	glBindVertexArray(0);
 }
 
-unsigned int Quad::initPositions(std::vector<glm::vec3>& positions)
-{	
-	glGenBuffers(1, &instanceVB);
-	positionBuffers.push_back({ instanceVB, positions.size() });
-	glBindVertexArray(VA);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, instanceVB);
-	if (!positions.empty())
+
+
+Quad::Instance& Quad::findInstace(unsigned int& id)
+{
+	for (int i = 0; i < instances.size(); i++)
 	{
-		glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), &positions[0], GL_STATIC_DRAW);
+		if (instances[i].id == id)
+		{
+			return instances[i];
+		}
+	}
+	return instances[0];
+}
+
+void Quad::clearPositionBuffer(unsigned int& id)
+{
+	int size = 0;
+	for (auto it = instances.begin(); it != instances.end(); it++)
+	{
+		if (it->id == id)
+		{
+			size = it->size;
+			it = instances.erase(it);
+			break;
+		}
+	}
+	glBindVertexArray(VA);
+	glBindBuffer(GL_ARRAY_BUFFER, id);
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+	glMapBufferRange(GL_ARRAY_BUFFER, 0, size * sizeof(glm::vec3), GL_MAP_INVALIDATE_BUFFER_BIT);
+	glBindVertexArray(0);
+}
+unsigned int Quad::initInstances(std::vector<InstanceData>& data)
+{
+	glGenBuffers(1, &instanceVB);
+	instances.push_back({ instanceVB, data.size() });
+	glBindVertexArray(VA);
+	glBindBuffer(GL_ARRAY_BUFFER, instanceVB);
+
+	if (!data.empty())
+	{
+		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(InstanceData), &data[0], GL_STATIC_DRAW);
 	}
 	else
 	{
-		glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
 	}
+	setInstanceLayout();
 
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glVertexAttribDivisor(4, 1);
 	glBindVertexArray(0);
 
 	return instanceVB;
 }
 
-Quad::Positions& Quad::findPositions(unsigned int& id)
+void Quad::updateInstanceData(unsigned int& id, std::vector<InstanceData>& data)
 {
-	for (int i = 0; i < positionBuffers.size(); i++)
-	{
-		if (positionBuffers[i].id == id)
-		{
-			return positionBuffers[i];
-		}
-	}
-	return positionBuffers[0];
+	Instance& instance = findInstace(id);
+	instance.size = data.size();
+
+	glBindVertexArray(VA);
+	glBindBuffer(GL_ARRAY_BUFFER, id);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(InstanceData), &data[0], GL_STATIC_DRAW);
+	setInstanceLayout();
+
+	glBindVertexArray(0);
 }
 
-void Quad::clearPositionBuffer(unsigned int& id)
-{
-	for (auto it = positionBuffers.begin(); it != positionBuffers.end(); it++)
-	{
-		if (it->id == id)
-		{
-			it = positionBuffers.erase(it);
-			return;
-		}
-	}
-}
-
-void Quad::setPositionData(Positions& pos)
+void Quad::bindInstanceData(Instance& instance)
 {
 	glBindVertexArray(VA);
-	glBindBuffer(GL_ARRAY_BUFFER, pos.id);
+	glBindBuffer(GL_ARRAY_BUFFER, instance.id);
+	setInstanceLayout();
+}
+
+void Quad::setInstanceLayout()
+{
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)offsetof(InstanceData, faceTexture));
+	glVertexAttribDivisor(3, 1);
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(InstanceData), (void*)offsetof(InstanceData, InstanceData::facePosition));
 	glVertexAttribDivisor(4, 1);
 }
 
-void Quad::draw(unsigned int positionsId)
+void Quad::drawInstanced(unsigned int instanceID)
 {
-	Positions& pos = findPositions(positionsId);
+	Instance& instance = findInstace(instanceID);
 
 	glBindVertexArray(VA);
-	setPositionData(pos);
-	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, pos.size);
+	bindInstanceData(instance);
+	glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, instance.size);
 	glBindVertexArray(0);
 }
 

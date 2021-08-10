@@ -7,12 +7,8 @@
 #include <GLEW/glew.h>
 #include <glm/glm.hpp>
 
-struct Texture {
-	unsigned int id;
-	std::string path;
-};
-
-static std::vector<Texture> loaded_textures;
+#define ATLAS_SIZE 768
+#define TEXTURE_SIZE 48
 
 class Quad {
 public:
@@ -32,12 +28,16 @@ public:
 		glm::vec3 position;
 		glm::vec3 normal;
 		glm::vec2 texCoord;
-		float textureNumber;
 	};
 
-	struct Positions {
+	struct Instance {
 		unsigned int id;
 		unsigned int size;
+	};
+
+	struct InstanceData {
+		glm::vec2 faceTexture;
+		glm::vec3 facePosition;
 	};
 
 	unsigned int VA;
@@ -47,16 +47,18 @@ public:
 
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<Positions> positionBuffers;
+	std::vector<Instance> instances;
 
 	void setData(Face& f);
 	void setLayout();
-	unsigned int initPositions(std::vector<glm::vec3>& positions);
-	Positions& findPositions(unsigned int& id);
+	Instance& findInstace(unsigned int& id);
 	void clearPositionBuffer(unsigned int& id);
-	void setPositionData(Positions& pos);
+	void bindInstanceData(Instance& pos);
+	unsigned int initInstances(std::vector<InstanceData>& positions);
+	void updateInstanceData(unsigned int& id, std::vector<InstanceData>& positions);
+	void setInstanceLayout();
 
-	void draw(unsigned int positionsId);
+	void drawInstanced(unsigned int positionsId);
 
 	static glm::vec2 textureCoordinates[4];
 	static glm::vec3 getNormal(Face f);
