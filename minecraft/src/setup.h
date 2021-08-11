@@ -1,3 +1,5 @@
+#pragma once
+
 #define GLEW_STATIC
 
 #include <GLEW/glew.h>
@@ -7,12 +9,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <map>
 
 #include "src/utility/texture_loader.h"
 #include "src/shader.h"
 #include "src/globals.h"
+#include "UI/UI.h"
 
 #include "src/world/world.h"
+#include "entity/player.h"
 
 namespace util {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -29,22 +34,39 @@ namespace util {
         {
             glfwSetWindowShouldClose(window, true);
         }
-        camera.speed = 200.0f * deltaTime;
+        camera.speed = 300.0f * deltaTime;
+        
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
-            camera.position += camera.speed * glm::normalize(camera.front);
+            global::pressedKeys[GLFW_KEY_W] = true;
+        }
+        else
+        {
+            global::pressedKeys[GLFW_KEY_W] = false;
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
-            camera.position -= camera.speed * glm::normalize(camera.front);
+            global::pressedKeys[GLFW_KEY_S] = true;
+        }
+        else
+        {
+            global::pressedKeys[GLFW_KEY_S] = false;
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
-            camera.position += camera.speed * glm::normalize(glm::cross(camera.front, camera.up));
+            global::pressedKeys[GLFW_KEY_D] = true;
+        }
+        else
+        {
+            global::pressedKeys[GLFW_KEY_D] = false;
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
-            camera.position -= camera.speed * glm::normalize(glm::cross(camera.front, camera.up));
+            global::pressedKeys[GLFW_KEY_A] = true;
+        }
+        else
+        {
+            global::pressedKeys[GLFW_KEY_A] = false;
         }
     }
 
@@ -108,6 +130,8 @@ namespace util {
         glCullFace(GL_FRONT);
 
         Cube::initiateData();
+
+        UI::setCrosshair();
 
         return window;
     }

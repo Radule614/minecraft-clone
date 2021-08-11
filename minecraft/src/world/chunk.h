@@ -36,7 +36,28 @@ public:
 
 					if (heightMap[i][k] >= j)
 					{
-						blocks[i][j][k].type = Cube::GRASS;
+						if (heightMap[i][k]>=80)
+						{
+							if (heightMap[i][k] >= 100)
+							{
+								blocks[i][j][k].type = Cube::SNOW;
+							}
+							else
+							{
+								blocks[i][j][k].type = Cube::STONE;
+							}
+						}
+						else if(heightMap[i][k] == j)
+						{
+							blocks[i][j][k].type = Cube::GRASS;
+						}
+						else if (heightMap[i][k] > j + 2)
+						{
+							blocks[i][j][k].type = Cube::STONE;
+						}
+						else {
+							blocks[i][j][k].type = Cube::DIRT;
+						}
 					}
 					else
 					{

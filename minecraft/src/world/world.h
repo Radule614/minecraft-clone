@@ -11,7 +11,7 @@ using namespace global;
 class World 
 {
 public:
-    World(unsigned int seed = 1252) : seed(seed), worldSize(34), frequency(1.4), octaves(8)
+    World(unsigned int seed = 1715) : seed(seed), worldSize(CHUNK_NUMBER), frequency(2), octaves(6)
     {
         noiseGenerator = siv::PerlinNoise(seed);
 
@@ -135,11 +135,18 @@ public:
         int offsetX = (int)(CHUNK_SIZE_X) * gridPosX ;
         int offsetY = (int)(CHUNK_SIZE_Z) * gridPosZ ;
 
+        const double fx = (int)(CHUNK_SIZE_X) * worldSize / frequency;
+        const double fy = (int)(CHUNK_SIZE_Z) * worldSize / frequency;
+
         for (unsigned int x = 0; x < CHUNK_SIZE_X; x++)
         {
             for (unsigned int y = 0; y < CHUNK_SIZE_Z; y++)
             {
-                heightMap[x][y] = (CHUNK_SIZE_Y-8) * noiseGenerator.accumulatedOctaveNoise2D_0_1((x + offsetX) / fx, (y + offsetY) / fy, octaves);
+                heightMap[x][y] = 25 + (CHUNK_SIZE_Y - 50) * noiseGenerator.accumulatedOctaveNoise2D_0_1((x + offsetX) / fx, (y + offsetY) / fy, octaves);
+                if (heightMap[x][y] <= 65)
+                {
+                    heightMap[x][y] = 25 + (CHUNK_SIZE_Y - 50) * noiseGenerator.accumulatedOctaveNoise2D_0_1((x + offsetX) / fx, (y + offsetY) / fy, 4);
+                }
             }
         }
     }
@@ -210,6 +217,5 @@ private:
     unsigned int worldSize;
     double frequency;
     unsigned int octaves;
-    const double fx = (int)(CHUNK_SIZE_X) * worldSize / frequency;
-    const double fy = (int)(CHUNK_SIZE_Z) * worldSize / frequency;
+    
 };

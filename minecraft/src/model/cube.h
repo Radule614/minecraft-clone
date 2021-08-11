@@ -12,7 +12,9 @@ public:
 		AIR = 0,
 		DIRT,
 		GRASS,
-		SAND
+		SAND,
+		STONE,
+		SNOW
 	};
 	Type type;
 	glm::vec3 position;

@@ -92,6 +92,12 @@
     <ClInclude Include="src\UI\UI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\entity\entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\entity\player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\fragment.glsl" />
@@ -100,13 +106,10 @@
     <None Include="res\shaders\UI_vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\dirt.jpg">
+    <Image Include="res\textures\crosshair.png">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\grass_side.jpg">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\grass_top.jpg">
+    <Image Include="res\textures\atlas.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

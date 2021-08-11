@@ -156,6 +156,8 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\chunk.h" />
     <ClInclude Include="src\cube.h" />
+    <ClInclude Include="src\entity\entity.h" />
+    <ClInclude Include="src\entity\player.h" />
     <ClInclude Include="src\globals.h" />
     <ClInclude Include="src\model\cube.h" />
     <ClInclude Include="src\model\quad.h" />
@@ -182,9 +184,8 @@
     <None Include="res\shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\dirt.jpg" />
-    <Image Include="res\textures\grass_side.jpg" />
-    <Image Include="res\textures\grass_top.jpg" />
+    <Image Include="res\textures\atlas.png" />
+    <Image Include="res\textures\crosshair.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

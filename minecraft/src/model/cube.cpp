@@ -9,7 +9,9 @@ vector<glm::vec3> Cube::positions = {};
 map<Cube::Type, vector<glm::vec2>> Cube::textureIds = {
 	{Cube::GRASS, {glm::vec2(3, 0), glm::vec2(3, 0), glm::vec2(3, 0), glm::vec2(3, 0), glm::vec2(12, 12), glm::vec2(2, 0)}},
 	{Cube::DIRT, {glm::vec2(2, 0), glm::vec2(2, 0), glm::vec2(2, 0), glm::vec2(2, 0), glm::vec2(2, 0), glm::vec2(2, 0)}},
-	{Cube::SAND, {glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11)}}
+	{Cube::SAND, {glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11), glm::vec2(0, 11)}},
+	{Cube::STONE, {glm::vec2(1, 0), glm::vec2(1, 0), glm::vec2(1, 0), glm::vec2(1, 0), glm::vec2(1, 0), glm::vec2(1, 0)}},
+	{Cube::SNOW, {glm::vec2(2, 4), glm::vec2(2, 4), glm::vec2(2, 4), glm::vec2(2, 4), glm::vec2(2, 4), glm::vec2(2, 4)}}
 };
 
 Cube::Cube() {}
