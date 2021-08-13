@@ -4,12 +4,13 @@
 
 class Entity {
 public:
-	Entity(glm::vec3 pos) : position(pos)
+	Entity(glm::vec3 pos, glm::vec3 size) : position(pos), size(size)
 	{
 
 	}
 
 	void move();
-private:
 	glm::vec3 position;
+	glm::vec3 size;
+public:
 };

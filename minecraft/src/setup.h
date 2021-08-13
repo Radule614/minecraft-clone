@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "src/utility/utility.h"
+
 #include <iostream>
 #include <map>
 
@@ -19,7 +21,7 @@
 #include "src/world/world.h"
 #include "entity/player.h"
 
-namespace util {
+namespace setup {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         glViewport(0, 0, width, height);
@@ -34,7 +36,7 @@ namespace util {
         {
             glfwSetWindowShouldClose(window, true);
         }
-        camera.speed = 300.0f * deltaTime;
+        camera.speed = 50.0f * deltaTime;
         
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {

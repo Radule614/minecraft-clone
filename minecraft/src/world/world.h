@@ -157,7 +157,7 @@ public:
         {
             for (int j = 0; j < heightMap.size(); j++)
             {
-                heightMap[i][j] = 15;
+                heightMap[i][j] = CHUNK_SIZE_Y - 1;
             }
         }
     }
@@ -203,6 +203,12 @@ public:
                 }
             }
         }
+    }
+
+    Chunk* getChunk(glm::vec3 pos)
+    {
+        if (pos.x <0 || pos.x > worldSize - 1 || pos.y != -1 || pos.z < 0 || pos.z > worldSize - 1) return nullptr;
+        return chunks[pos.x][pos.y + 1][pos.z];
     }
 
 private:

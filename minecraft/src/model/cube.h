@@ -23,15 +23,10 @@ public:
 	Cube(Type t, glm::vec3 pos);
 
 	void setPosition(glm::vec3& pos);
-
 	static void draw(unsigned int& id);
-
 	static void initiateData();
-
 	static void drawBlocks(std::vector<Cube>& blocks);
-
 	static void drawBlock(Cube& block);
-
 	static std::vector<Quad> faces;
 	static std::map<Type, std::vector<glm::vec2>> textureIds;
 private:

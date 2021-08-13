@@ -5,7 +5,7 @@ using namespace global;
 
 int main()
 {
-    GLFWwindow* window = util::setup();
+    GLFWwindow* window = setup::setup();
 
     TextureLoader::load("res\\textures\\atlas.png", 0);
     TextureLoader::load("res\\textures\\crosshair.png", 1);
@@ -21,9 +21,9 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Player player(camera.position);
-
     World world;
+
+    Player player(camera.position, world, glm::vec3(1, 2, 1));
 
     while (!glfwWindowShouldClose(window))
     {
@@ -31,7 +31,7 @@ int main()
         deltaTime = currentFrame - lastFrame;
         //if (deltaTime < 1.0 / maxFPS) continue;
         lastFrame = currentFrame;
-        util::fpsCounter();
+        setup::fpsCounter();
         //glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
         glClearColor(0.3961f, 0.7608f, 96.08f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -48,7 +48,7 @@ int main()
         UI_shader.setUniformMatrix("projection", projection);
         UI::drawCrosshair();
 
-        util::processInput(window);
+        setup::processInput(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
