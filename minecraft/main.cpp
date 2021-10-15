@@ -29,7 +29,7 @@ int main()
     {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
-        //if (deltaTime < 1.0 / maxFPS) continue;
+        if (deltaTime < 1.0 / maxFPS) continue;
         lastFrame = currentFrame;
         setup::fpsCounter();
         //glClearColor(0.25f, 0.5f, 1.0f, 1.0f);

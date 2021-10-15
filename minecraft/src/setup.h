@@ -32,6 +32,14 @@ namespace setup {
 
     void processInput(GLFWwindow* window)
     {
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        {
+            global::pressedKeys[GLFW_KEY_SPACE] = true;
+        }
+        else
+        {
+            global::pressedKeys[GLFW_KEY_SPACE] = false;
+        }
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window, true);
@@ -108,7 +116,7 @@ namespace setup {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        window = glfwCreateWindow(screenWidth, screenHeight, "Minecraft", NULL, NULL);
+        window = glfwCreateWindow(screenWidth, screenHeight, "Game", NULL, NULL);
         if (!window)
         {
             glfwTerminate();

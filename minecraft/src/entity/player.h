@@ -43,99 +43,33 @@ public:
 
 	void checkCollision()
 	{
-		Chunk* chunk = world.getChunk(chunkPosition);
-		Chunk* frontChunk = chunk->frontNeighbor;
-		Chunk* backChunk = chunk->backNeighbor;
-		Chunk* rightChunk = chunk->rightNeighbor;
-		Chunk* leftChunk = chunk->leftNeighbor;
+		vector<Cube*> neighbors;
+		Cube* block = nullptr;
 
-		glm::vec3& pos = blockPositionInChunk;
-		Cube* block = chunk->getBlock(pos);
-		Cube* bottom = chunk->getBlock(glm::vec3(pos.x, pos.y - 1, pos.z));
-		Cube* front;
-		Cube* back;
-		Cube* left;
-		Cube* right;
-
-		back = chunk->getBlock(glm::vec3(pos.x, pos.y, pos.z + 1));
-		if (back == nullptr && backChunk != nullptr)
+		for (int i = 0; i < 3; ++i)
 		{
-			back = backChunk->getBlock(glm::vec3(pos.x, pos.y, 0));
-		}
-
-		front = chunk->getBlock(glm::vec3(pos.x, pos.y, pos.z - 1));
-		if (front == nullptr && frontChunk != nullptr)
-		{
-			front = frontChunk->getBlock(glm::vec3(pos.x, pos.y, CHUNK_SIZE_Z - 1));
-		}
-
-		left = chunk->getBlock(glm::vec3(pos.x - 1, pos.y, pos.z));
-		if (left == nullptr && leftChunk != nullptr)
-		{
-			left = leftChunk->getBlock(glm::vec3(CHUNK_SIZE_X - 1, pos.y, pos.z));
-		}
-
-		right = chunk->getBlock(glm::vec3(pos.x + 1, pos.y, pos.z));
-		if (right == nullptr && rightChunk != nullptr)
-		{
-			right = rightChunk->getBlock(glm::vec3(0, pos.y, pos.z));
-		}
-
-		if (block != nullptr)
-		{
-			
-			if (bottom != nullptr && bottom->type != Cube::AIR)
+			for (int j = 0; j < 4; ++j)
 			{
-			
-				if (abs(camera.position.y - bottom->position.y) < 2)
+				for (int k = 0; k < 3; ++k)
 				{
-					camera.position.y = block->position.y;
-					updatePositions();
-					cout << "collision-bottom" << endl;
-				}
-			}
-			if (back != nullptr && back->type != Cube::AIR)
-			{
-				if (abs(camera.position.z - back->position.z) < 2)
-				{
-					camera.position.z = block->position.z;
-					updatePositions();
-					cout << "collision-back" << endl;
-				}
-			}
-			if (front != nullptr && front->type != Cube::AIR)
-			{
-				if (abs(camera.position.z - front->position.z) < 2)
-				{
-					camera.position.z = block->position.z;
-					updatePositions();
-					cout << "collision-front" << endl;
-				}
-			}
-
-			if (left != nullptr && left->type != Cube::AIR)
-			{
-				if (abs(camera.position.x - left->position.x) < 2)
-				{
-					camera.position.x = block->position.x;
-					updatePositions();
-					cout << "collision-left" << endl;
-				}
-			}
-			if (right != nullptr && right->type != Cube::AIR)
-			{
-				if (abs(camera.position.x - right->position.x) < 2)
-				{
-					camera.position.x = block->position.x;
-					updatePositions();
-					cout << "collision-right" << endl;
+					if (i == 1 && (j == 1 || j == 2) && k == 1) continue;
+					glm::vec3 tempPos = glm::vec3(blockPosition.x + i - 1, blockPosition.y + j - 2, blockPosition.z + k - 1);
+					block = world.getBlock(tempPos);
+					if (block != nullptr && block->type != Cube::AIR) neighbors.push_back(block);
+					
+					/*
+					* 
+					(camera +- 1)  && block
+					checkAABBColision();
+						
+					*/
 				}
 			}
 		}
-		else 
-		{
-			cout << "BLOCK NULL" << endl;
-		}
+		cout << neighbors.size() << endl;
+		//utility::printVec3(position);
+		
+		neighbors.clear();
 	}
 
 	void updatePositions()

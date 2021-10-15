@@ -181,7 +181,6 @@ public:
 	Cube* getBlock(glm::vec3 pos)
 	{
 		if (pos.x < 0 || pos.x >CHUNK_SIZE_X - 1 || pos.y < 0 || pos.y > CHUNK_SIZE_Y - 1 || pos.z < 0 || pos.z > CHUNK_SIZE_Z - 1) return nullptr;
-		
 		return &blocks[pos.x][pos.y][pos.z];
 	}
 	

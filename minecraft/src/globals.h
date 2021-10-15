@@ -11,20 +11,20 @@
 #define CHUNK_SIZE_Y 144
 #define CHUNK_SIZE_Z 16
 #define CHUNK_SPAWN_RADIUS 4
-#define CHUNK_NUMBER 30
+#define CHUNK_NUMBER 2
 
 #include "camera.h"
 
 namespace global {
 	std::map<unsigned int, bool> pressedKeys;
 
-	const unsigned int maxFPS = 210;
-	unsigned int screenWidth = 1270;
-	unsigned int screenHeight = 720;
+	const unsigned int maxFPS = 100;
+	unsigned int screenWidth = 1600;
+	unsigned int screenHeight = 900;
 
 	glm::mat4 projection = glm::perspective(glm::radians(55.0f), (float)screenWidth / (float)screenHeight, 0.1f, 1500.0f);
-	Camera camera(Camera::FREELOOK, glm::vec3(5*16.0f, -16.0f, 5 * (-16.0f)));
-
+	Camera camera(Camera::FREELOOK, glm::vec3(16.0f, -32.0f, -16.0f));
+	//glm::vec3(5*16.0f, -16.0f, 5 * (-16.0f))
 	float lastX = screenWidth / 2.0;
 	float lastY = screenHeight / 2.0;
 	bool firstMouse = true;
