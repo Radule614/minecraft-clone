@@ -8,18 +8,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "src/utility/utility.h"
+#include "src/utility/utility.hpp"
 
 #include <iostream>
 #include <map>
 
-#include "src/utility/texture_loader.h"
-#include "src/shader.h"
-#include "src/globals.h"
-#include "UI/UI.h"
+#include "src/utility/texture_loader.hpp"
+#include "src/shader.hpp"
+#include "src/globals.hpp"
+#include "UI/UI.hpp"
 
-#include "src/world/world.h"
-#include "entity/player.h"
+#include "src/world/world.hpp"
+#include "entity/player.hpp"
 
 namespace setup {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -32,6 +32,8 @@ namespace setup {
 
     void processInput(GLFWwindow* window)
     {
+        camera.speed = 50.0f * deltaTime;
+        
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {
             global::pressedKeys[GLFW_KEY_SPACE] = true;
@@ -44,7 +46,6 @@ namespace setup {
         {
             glfwSetWindowShouldClose(window, true);
         }
-        camera.speed = 50.0f * deltaTime;
         
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
@@ -95,6 +96,14 @@ namespace setup {
         camera.calculateDirection(xoffset, yoffset);
     }
 
+    void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+    {
+        if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+        {
+            cout << "rade" << endl;
+        }
+    }
+
     void fpsCounter()
     {
         if (glfwGetTime() - lastFpsDisplay < 1)
@@ -132,6 +141,7 @@ namespace setup {
         //settings
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetCursorPosCallback(window, mouse_callback);
+        glfwSetMouseButtonCallback(window, mouse_button_callback);
         glViewport(0, 0, screenWidth, screenHeight);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glEnable(GL_DEPTH_TEST);

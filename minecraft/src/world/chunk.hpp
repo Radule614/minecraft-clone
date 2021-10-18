@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#include "../model/cube.h"
+#include "../model/cube.hpp"
 
 class Chunk {
 public:

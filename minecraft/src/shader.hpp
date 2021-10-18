@@ -1,11 +1,10 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "utility/reader.h"
+#include "utility/reader.hpp"
 
 class Shader {
 private:
@@ -140,5 +139,3 @@ public:
 		glUniform4f(location, vector.x, vector.y, vector.z, vector.w);
 	}
 };
-
-#endif

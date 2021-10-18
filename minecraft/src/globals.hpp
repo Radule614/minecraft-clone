@@ -1,5 +1,6 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#pragma once
+
+#include <map>
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,9 +12,9 @@
 #define CHUNK_SIZE_Y 144
 #define CHUNK_SIZE_Z 16
 #define CHUNK_SPAWN_RADIUS 4
-#define CHUNK_NUMBER 2
+#define CHUNK_NUMBER 10
 
-#include "camera.h"
+#include "camera.hpp"
 
 namespace global {
 	std::map<unsigned int, bool> pressedKeys;
@@ -37,5 +38,3 @@ namespace global {
 	float frameNumber = 0.0f;
 
 }
-
-#endif

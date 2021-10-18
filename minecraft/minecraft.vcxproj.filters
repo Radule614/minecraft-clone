@@ -29,16 +29,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\camera.h">
+    <ClInclude Include="src\camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\globals.h">
+    <ClInclude Include="src\globals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\reader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\shader.h">
+    <ClInclude Include="src\shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\stb_image.h">
@@ -65,40 +65,43 @@
     <ClInclude Include="src\utility\perlinNoise.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utility\reader.h">
+    <ClInclude Include="src\utility\reader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utility\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utility\texture_loader.h">
+    <ClInclude Include="src\utility\texture_loader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\world\chunk.h">
+    <ClInclude Include="src\world\chunk.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\world\world.h">
+    <ClInclude Include="src\world\world.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\cube.h">
+    <ClInclude Include="src\model\cube.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\quad.h">
+    <ClInclude Include="src\model\quad.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\setup.h">
+    <ClInclude Include="src\setup.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\UI\UI.h">
+    <ClInclude Include="src\UI\UI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\entity\entity.h">
+    <ClInclude Include="src\entity\entity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\entity\player.h">
+    <ClInclude Include="src\entity\player.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utility\utility.h">
+    <ClInclude Include="src\utility\utility.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

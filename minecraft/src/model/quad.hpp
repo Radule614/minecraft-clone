@@ -51,13 +51,14 @@ public:
 
 	void setData(Face& f);
 	void setLayout();
-	Instance& findInstace(unsigned int& id);
+	Instance& findInstance(unsigned int& id);
 	void clearPositionBuffer(unsigned int& id);
 	void bindInstanceData(Instance& pos);
 	unsigned int initInstances(std::vector<InstanceData>& positions);
 	void updateInstanceData(unsigned int& id, std::vector<InstanceData>& positions);
 	void setInstanceLayout();
 
+	void draw();
 	void drawInstanced(unsigned int positionsId);
 
 	static glm::vec2 textureCoordinates[4];

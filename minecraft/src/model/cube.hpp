@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include "quad.h"
+#include "quad.hpp"
 
 class Cube {
 public:

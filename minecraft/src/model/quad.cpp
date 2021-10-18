@@ -1,4 +1,4 @@
-#include "quad.h"
+#include "quad.hpp"
 
 using namespace std;
 
@@ -142,7 +142,7 @@ void Quad::setLayout()
 
 
 
-Quad::Instance& Quad::findInstace(unsigned int& id)
+Quad::Instance& Quad::findInstance(unsigned int& id)
 {
 	for (int i = 0; i < instances.size(); i++)
 	{
@@ -196,7 +196,7 @@ unsigned int Quad::initInstances(std::vector<InstanceData>& data)
 
 void Quad::updateInstanceData(unsigned int& id, std::vector<InstanceData>& data)
 {
-	Instance& instance = findInstace(id);
+	Instance& instance = findInstance(id);
 	instance.size = data.size();
 
 	glBindVertexArray(VA);
@@ -224,9 +224,16 @@ void Quad::setInstanceLayout()
 	glVertexAttribDivisor(4, 1);
 }
 
+void Quad::draw()
+{
+	glBindVertexArray(VA);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
 void Quad::drawInstanced(unsigned int instanceID)
 {
-	Instance& instance = findInstace(instanceID);
+	Instance& instance = findInstance(instanceID);
 
 	glBindVertexArray(VA);
 	bindInstanceData(instance);

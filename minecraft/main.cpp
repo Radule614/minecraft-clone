@@ -1,4 +1,4 @@
-#include "src/setup.h"
+#include "src/setup.hpp"
 
 using namespace std;
 using namespace global;

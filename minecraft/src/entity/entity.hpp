@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../world/world.hpp"
+#include "../ray.hpp"
+
 #include "glm/glm.hpp"
 
 class Entity {

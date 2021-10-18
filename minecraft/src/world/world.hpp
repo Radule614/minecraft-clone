@@ -3,8 +3,8 @@
 #include <math.h>
 #include "../utility/perlinNoise.hpp"
 
-#include "../globals.h"
-#include "chunk.h"
+#include "../globals.hpp"
+#include "chunk.hpp"
 
 using namespace global;
 
