@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\entity\player.cpp" />
     <ClCompile Include="src\model\cube.cpp" />
     <ClCompile Include="src\model\quad.cpp" />
     <ClCompile Include="src\utility\stb_image.cpp" />
