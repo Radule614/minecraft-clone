@@ -100,7 +100,11 @@ namespace setup {
     {
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
         {
-            cout << "rade" << endl;
+            pressedKeys[GLFW_MOUSE_BUTTON_LEFT] = true;
+        }
+        else 
+        {
+            pressedKeys[GLFW_MOUSE_BUTTON_LEFT] = false;
         }
     }
 

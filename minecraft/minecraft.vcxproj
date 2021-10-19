@@ -148,35 +148,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\entity\player.cpp" />
     <ClCompile Include="src\model\cube.cpp" />
     <ClCompile Include="src\model\quad.cpp" />
     <ClCompile Include="src\utility\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\camera.hpp" />
-    <ClInclude Include="src\chunk.h" />
-    <ClInclude Include="src\cube.h" />
     <ClInclude Include="src\entity\entity.hpp" />
     <ClInclude Include="src\entity\player.hpp" />
     <ClInclude Include="src\globals.hpp" />
     <ClInclude Include="src\model\cube.hpp" />
     <ClInclude Include="src\model\quad.hpp" />
     <ClInclude Include="src\perlinNoise.hpp" />
-    <ClInclude Include="src\quad.h" />
     <ClInclude Include="src\ray.hpp" />
-    <ClInclude Include="src\reader.h" />
     <ClInclude Include="src\setup.hpp" />
     <ClInclude Include="src\shader.hpp" />
-    <ClInclude Include="src\stb_image.h" />
-    <ClInclude Include="src\texture_loader.h" />
     <ClInclude Include="src\UI\UI.hpp" />
     <ClInclude Include="src\utility\perlinNoise.hpp" />
     <ClInclude Include="src\utility\reader.hpp" />
     <ClInclude Include="src\utility\stb_image.h" />
     <ClInclude Include="src\utility\texture_loader.hpp" />
     <ClInclude Include="src\utility\utility.hpp" />
-    <ClInclude Include="src\world.h" />
     <ClInclude Include="src\world\chunk.hpp" />
     <ClInclude Include="src\world\world.hpp" />
   </ItemGroup>

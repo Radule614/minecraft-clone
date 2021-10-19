@@ -205,29 +205,37 @@ public:
         }
     }
 
-    Chunk* getChunk(glm::vec3 pos)
+    Chunk* getChunk(glm::vec3& pos)
     {
         if (pos.x < 0 || pos.x > worldSize - 1 || pos.y != -1 || pos.z < 0 || pos.z > worldSize - 1) return nullptr;
         return chunks[pos.x][pos.y + 1][pos.z];
     }
 
-    Cube* getBlock(glm::vec3 blockPosition)
+    Cube* getBlock(glm::vec3& blockPosition)
     {
-        glm::vec3 chunkPosition;
-        glm::vec3 blockPositionInChunk;
-        chunkPosition.x = floor(blockPosition.x / CHUNK_SIZE_X);
-        chunkPosition.y = floor(blockPosition.y / CHUNK_SIZE_Y);
-        chunkPosition.z = -ceil(blockPosition.z / CHUNK_SIZE_Z);
-        blockPositionInChunk.x = (int)blockPosition.x % (CHUNK_SIZE_X);
-        blockPositionInChunk.y = CHUNK_SIZE_Y - abs((int)blockPosition.y % (CHUNK_SIZE_Y));
-        blockPositionInChunk.z = abs((int)blockPosition.z % (CHUNK_SIZE_Z));
         
+        glm::vec3 chunkPosition = Chunk::getChunkPosition(blockPosition);
+        glm::vec3 blockPositionInChunk = Chunk::getBlockPositionInChunk(blockPosition);
         Chunk* chunk = getChunk(chunkPosition);
         
         Cube* block = nullptr;
         if (chunk != nullptr) block = chunk->getBlock(blockPositionInChunk);
         
         return block;
+    }
+
+    void removeBlock(Cube* block)
+    {
+        glm::vec3 blockPosition = block->position / glm::vec3(2);
+        glm::vec3 chunkPosition = Chunk::getChunkPosition(blockPosition);
+        glm::vec3 blockPositionInChunk = Chunk::getBlockPositionInChunk(block->position);
+        Chunk* chunk = getChunk(chunkPosition);
+        if (chunk == nullptr) return;
+        
+        vector<Quad::Face> removedFaces;
+        chunk->removeBlockFromDraw(block, removedFaces);
+
+        cout << "hit, removed faces: " << removedFaces.size() << endl;
     }
 
 private:

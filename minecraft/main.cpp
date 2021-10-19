@@ -38,6 +38,11 @@ int main()
 
         player.move();
 
+        if (pressedKeys[GLFW_MOUSE_BUTTON_LEFT])
+        {
+            player.castRay();
+        }
+
         objectShader.bind();
         objectShader.resetModelMatrix();
         objectShader.setUniformMatrix("projection", projection);

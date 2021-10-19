@@ -178,17 +178,66 @@ public:
 		instanceBufferIDs.clear();
 	}
 
-	Cube* getBlock(glm::vec3 pos)
+	Cube* getBlock(glm::vec3& pos)
 	{
 		if (pos.x < 0 || pos.x >CHUNK_SIZE_X - 1 || pos.y < 0 || pos.y > CHUNK_SIZE_Y - 1 || pos.z < 0 || pos.z > CHUNK_SIZE_Z - 1) return nullptr;
 		return &blocks[pos.x][pos.y][pos.z];
 	}
+
+	bool removeInstanceData(glm::vec3& blockPosition, Quad::Face f)
+	{
+		auto it = faceData[f].begin();
+		for (; it != faceData[f].end(); ++it)
+		{
+			if (it->facePosition == blockPosition)
+			{
+				faceData[f].erase(it);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void removeBlockFromDraw(Cube* block, vector<Quad::Face>& removedFaces)
+	{
+		if (block == nullptr) return;
+		for (int i = 0; i < Cube::faces.size(); ++i)
+		{
+			if (removeInstanceData(block->position, (Quad::Face)i))
+			{
+				removedFaces.push_back((Quad::Face)i);
+			}
+		}
+		updatePositions();
+		block->type = Cube::AIR;
+	}
 	
+	static glm::vec3 getChunkPosition(glm::vec3& blockPosition)
+	{
+		glm::vec3 temp;
+		temp.x = floor(blockPosition.x / CHUNK_SIZE_X);
+		temp.y = floor(blockPosition.y / CHUNK_SIZE_Y);
+		temp.z = -ceil(blockPosition.z / CHUNK_SIZE_Z);
+		return temp;
+	}
+	static glm::vec3 getBlockPositionInChunk(glm::vec3& blockPosition)
+	{
+		glm::vec3 temp;
+		temp.x = (int)blockPosition.x % (CHUNK_SIZE_X);
+		temp.y = CHUNK_SIZE_Y - abs((int)blockPosition.y % (CHUNK_SIZE_Y));
+		temp.z = abs((int)blockPosition.z % (CHUNK_SIZE_Z));
+		return temp;
+	}
+
+	
+
+	//FIELDS
+
 	vector<vector<vector<Cube>>> blocks;
 	glm::vec3 position;
 	glm::vec3 gridPosition;
 	vector<Cube> blocksToDraw;
-	
+
 	Chunk* frontNeighbor;
 	Chunk* backNeighbor;
 	Chunk* leftNeighbor;
