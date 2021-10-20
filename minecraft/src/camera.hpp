@@ -24,7 +24,8 @@ public:
 	Type type;
 
 	glm::vec3 direction;
-	glm::vec3 speedVector;
+	
+	glm::vec3 velocity;
 	glm::vec3 oldPosition;
 
 	Camera(Type t, glm::vec3 pos = glm::vec3(0.0f)) : type(t), pitch(0.0f), yaw(-90.0f), sensitivity(0.1f), speed(0)
@@ -52,7 +53,7 @@ public:
 		front = glm::normalize(direction);
 	}
 
-	void move(std::map<unsigned int, bool>& pressedKeys)
+	void calculateVelocity(std::map<unsigned int, bool>& pressedKeys)
 	{
 		glm::vec3 dirVector_front = glm::vec3(0);
 		glm::vec3 dirVector_side = glm::vec3(0);
@@ -74,12 +75,16 @@ public:
 		}
 		
 		if (dirVector_front != glm::vec3(0) || dirVector_side != glm::vec3(0))
-		{
-			oldPosition = position;
+		{	
 			direction = glm::normalize(dirVector_front + dirVector_side);
-			speedVector = speed * direction;
-			position += speedVector;
+			velocity = speed * direction;	
 		}
+	}
+
+	void move()
+	{
+		oldPosition = position;
+		position += velocity;
 	}
 
 	glm::mat4 getView() const

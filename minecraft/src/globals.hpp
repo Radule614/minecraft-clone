@@ -12,7 +12,7 @@
 #define CHUNK_SIZE_Y 144
 #define CHUNK_SIZE_Z 16
 #define CHUNK_SPAWN_RADIUS 4
-#define CHUNK_NUMBER 10
+#define CHUNK_NUMBER 16
 
 #include "camera.hpp"
 

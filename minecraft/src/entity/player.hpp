@@ -5,7 +5,10 @@
 class Player : public Entity
 {
 public:
-	Player(glm::vec3 pos, World& world, glm::vec3 size) : Entity(pos, size), world(world), view(camera) {}
+	Player(glm::vec3 pos, World& world, glm::vec3 size) : Entity(pos, size), world(world), view(camera) 
+	{
+		updatePositions();
+	}
 
 	void checkEdgeCollision()
 	{
@@ -27,17 +30,17 @@ public:
 		if (chunkPosition.x == -1)
 		{
 			chunkPosition.x = 0;
-			view.position.x = 0;
+			view.position.x = -1;
 		}
 		if (chunkPosition.y == -2)
 		{
 			chunkPosition.y = -1;
-			view.position.y = -(2 * CHUNK_SIZE_Y - 1);
+			view.position.y = -(2 * CHUNK_SIZE_Y + 1);
 		}
 		if (chunkPosition.z == -1)
 		{
 			chunkPosition.z = 0;
-			view.position.z = 0;
+			view.position.z = 1;
 		}
 	}
 	
@@ -45,44 +48,32 @@ public:
 	{
 		Cube* block = nullptr;
 
-		float Axmin, Axmax, Aymin, Aymax, Azmin, Azmax;
-		float Bxmin, Bxmax, Bymin, Bymax, Bzmin, Bzmax;
-
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 4; ++j)
 			{
 				for (int k = 0; k < 3; ++k)
 				{
-					if (i == 1 && (j == 1 || j == 2) && k == 1) continue;
+					//if (i == 1 && (j == 1 || j == 2) && k == 1) continue;
 					glm::vec3 tempPos = glm::vec3(blockPosition.x + i - 1, blockPosition.y + j - 2, blockPosition.z + k - 1);
 					block = world.getBlock(tempPos);
 					if (block != nullptr && block->type != Cube::AIR)
 					{
-						/*Axmin = position.x - 1;
-						Axmax = position.x + 1;
-						Aymin = position.y - 3;
-						Aymax = position.y + 1;
-						Azmin = position.z - 1;
-						Azmax = position.z + 1;
 
-						Bxmin = block->position.x - 1;
-						Bxmax = block->position.x + 1;
-						Bymin = block->position.y - 1;
-						Bymax = block->position.y + 1;
-						Bzmin = block->position.z - 1;
-						Bzmax = block->position.z + 1;
-
-						if ((Axmax > Bxmin && Bxmax > Axmin) && (Aymax > Bymin && Bymax > Aymin) && (Azmax > Bzmin && Bzmax > Azmin))
-						{
-							view.position.y = camera.oldPosition.y;
-						}*/
-
-						glm::vec3 direction = position - oldPosition;
+						//glm::vec3 direction = position - oldPosition;
+						glm::vec3 direction = view.direction;
 						glm::vec3 contact_point;
 						glm::vec3 contact_normal;
 						float t_hit_near;
-						if (ray::cubeCollision(oldPosition, direction, block, contact_point, contact_normal, t_hit_near)) cout << "collision" << endl;
+						if (ray::cuboidCollision(position, direction, {position, glm::vec3(1, 1, 1)}, contact_point, contact_normal, t_hit_near))
+						{
+							
+							utility::printVec3(contact_normal);
+							//view.position += contact_normal;
+							//view.velocity.x = 0;
+							//view.velocity.y = 0;
+							//view.velocity.z = 0;
+						}
 					}
 				}
 			}
@@ -108,10 +99,16 @@ public:
 		map<unsigned int, bool>& keys = global::pressedKeys;
 		if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
 		{
-			camera.move(keys);
-			updatePositions();
-			checkEdgeCollision();
+			
+			camera.calculateVelocity(keys);
+			
 			checkCollision();
+			
+			camera.move();
+			updatePositions();
+			
+			
+			checkEdgeCollision();
 		}
 	}
 
@@ -119,26 +116,32 @@ public:
 	{
 		Cube* block = nullptr;
 		glm::vec3& direction = view.front;
-		for (int i = 0; i < 9; ++i)
+
+		int radius = 6;
+
+		for (int r = 0; r <= radius; ++r)
 		{
-			for (int j = 0; j < 9; ++j)
+			for (int i = -r; i <= r; ++i)
 			{
-				for (int k = 0; k < 9; ++k)
+				for (int j = -r; j <= r; ++j)
 				{
-					glm::vec3 tempPos = glm::vec3(blockPosition.x + i - 4, blockPosition.y + j - 4, blockPosition.z + k - 4);
-					block = world.getBlock(tempPos);
-					if (block != nullptr && block->type != Cube::AIR)
+					for (int k = -r; k <= r; ++k)
 					{
-						glm::vec3 contact_point;
-						glm::vec3 contact_normal;
-						float t_hit_near;
-						if (ray::cubeCollision(position, direction, block, contact_point, contact_normal, t_hit_near))
+						glm::vec3 tempPos = glm::vec3(blockPosition.x + i, blockPosition.y + j, blockPosition.z + k);
+						block = world.getBlock(tempPos);
+						if (block != nullptr && block->type != Cube::AIR)
 						{
-							float d = glm::distance(position, contact_point);
-							if (d <= 9)
+							glm::vec3 contact_point;
+							glm::vec3 contact_normal;
+							float t_hit_near;
+							if (ray::cuboidCollision(position, direction, { block->position, glm::vec3(1, 1, 1) }, contact_point, contact_normal, t_hit_near))
 							{
-								world.removeBlock(block);
-								return;
+								float d = glm::distance(position, contact_point);
+								if (d <= 9)
+								{
+									world.removeBlock(block);
+									return;
+								}
 							}
 						}
 					}

@@ -184,12 +184,12 @@ public:
 		return &blocks[pos.x][pos.y][pos.z];
 	}
 
-	bool removeInstanceData(glm::vec3& blockPosition, Quad::Face f)
+	bool removeInstanceData(glm::vec3& facePosition, Quad::Face f)
 	{
 		auto it = faceData[f].begin();
 		for (; it != faceData[f].end(); ++it)
 		{
-			if (it->facePosition == blockPosition)
+			if (it->facePosition == facePosition)
 			{
 				faceData[f].erase(it);
 				return true;
@@ -198,15 +198,31 @@ public:
 		return false;
 	}
 
-	void removeBlockFromDraw(Cube* block, vector<Quad::Face>& removedFaces)
+	bool instanceDataExists(glm::vec3& facePosition, Quad::Face f)
+	{
+		auto it = faceData[f].begin();
+		for (; it != faceData[f].end(); ++it)
+		{
+			if (it->facePosition == facePosition)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void removeFaceFromDraw(glm::vec3& facePosition, Quad::Face f)
+	{
+		removeInstanceData(facePosition, f);
+		updatePositions();
+	}
+
+	void removeBlockFromDraw(Cube* block)
 	{
 		if (block == nullptr) return;
 		for (int i = 0; i < Cube::faces.size(); ++i)
 		{
-			if (removeInstanceData(block->position, (Quad::Face)i))
-			{
-				removedFaces.push_back((Quad::Face)i);
-			}
+			removeInstanceData(block->position, (Quad::Face)i);
 		}
 		updatePositions();
 		block->type = Cube::AIR;

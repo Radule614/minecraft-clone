@@ -12,7 +12,7 @@ void main(){
 	texColor = texture(atlas, texCoord);
 
 	vec3 lightColor = vec3(1);
-	vec3 lightDir = normalize(vec3(1, 2, 1));
+	vec3 lightDir = normalize(vec3(1, 1.7, 1));
 	
 	
 	float ambientStrength = 0.5;

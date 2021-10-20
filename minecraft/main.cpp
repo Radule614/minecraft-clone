@@ -34,6 +34,7 @@ int main()
         setup::fpsCounter();
         //glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
         glClearColor(0.3961f, 0.7608f, 96.08f, 1.0f);
+        //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         player.move();

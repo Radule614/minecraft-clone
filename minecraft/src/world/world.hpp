@@ -213,7 +213,6 @@ public:
 
     Cube* getBlock(glm::vec3& blockPosition)
     {
-        
         glm::vec3 chunkPosition = Chunk::getChunkPosition(blockPosition);
         glm::vec3 blockPositionInChunk = Chunk::getBlockPositionInChunk(blockPosition);
         Chunk* chunk = getChunk(chunkPosition);
@@ -228,14 +227,39 @@ public:
     {
         glm::vec3 blockPosition = block->position / glm::vec3(2);
         glm::vec3 chunkPosition = Chunk::getChunkPosition(blockPosition);
-        glm::vec3 blockPositionInChunk = Chunk::getBlockPositionInChunk(block->position);
+        glm::vec3 blockPositionInChunk = Chunk::getBlockPositionInChunk(blockPosition);
         Chunk* chunk = getChunk(chunkPosition);
         if (chunk == nullptr) return;
         
-        vector<Quad::Face> removedFaces;
-        chunk->removeBlockFromDraw(block, removedFaces);
+        chunk->removeBlockFromDraw(block);
+        
+        vector<glm::vec3> adjacentP;
+        adjacentP.push_back(glm::vec3(blockPosition.x, blockPosition.y, blockPosition.z - 1));
+        adjacentP.push_back(glm::vec3(blockPosition.x, blockPosition.y, blockPosition.z + 1));
+        adjacentP.push_back(glm::vec3(blockPosition.x + 1, blockPosition.y, blockPosition.z));
+        adjacentP.push_back(glm::vec3(blockPosition.x - 1, blockPosition.y, blockPosition.z));
+        adjacentP.push_back(glm::vec3(blockPosition.x, blockPosition.y - 1, blockPosition.z));
+        adjacentP.push_back(glm::vec3(blockPosition.x, blockPosition.y + 1, blockPosition.z));
+        
+        int s = 0;
+        for (auto it = adjacentP.begin(); it != adjacentP.end(); ++it, s++)
+        {
+            Cube* adjacentBlock = getBlock(*it);
+            glm::vec3 adjacentChunkPosition = Chunk::getChunkPosition(*it);
+            Chunk* adjacentBlockChunk = getChunk(adjacentChunkPosition);
+            if (adjacentBlockChunk == nullptr || adjacentBlock == nullptr)
+            {
+                cout << "NULL" << endl;
+                continue;
+            }
+            if (adjacentBlock->type == Cube::AIR) continue;
 
-        cout << "hit, removed faces: " << removedFaces.size() << endl;
+            if (!(adjacentBlockChunk->instanceDataExists(adjacentP[(Quad::Face)s], (Quad::Face)s)))
+            {
+                adjacentBlockChunk->drawBlockFace(*adjacentBlock, (Quad::Face)s);
+                adjacentBlockChunk->updatePositions();
+            }
+        }
     }
 
 private:
