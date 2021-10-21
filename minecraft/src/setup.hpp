@@ -32,7 +32,7 @@ namespace setup {
 
     void processInput(GLFWwindow* window)
     {
-        camera.speed = 50.0f * deltaTime;
+        camera.speed = 20.0f * deltaTime;
         
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {

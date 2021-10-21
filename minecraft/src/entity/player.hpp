@@ -47,6 +47,11 @@ public:
 	void checkCollision()
 	{
 		Cube* block = nullptr;
+		glm::vec3& v = view.velocity;
+		std::vector<std::pair<Cube *, float>> z;
+		glm::vec3 contact_point;
+		glm::vec3 contact_normal;
+		float contact_time;
 
 		for (int i = 0; i < 3; ++i)
 		{
@@ -54,28 +59,24 @@ public:
 			{
 				for (int k = 0; k < 3; ++k)
 				{
-					//if (i == 1 && (j == 1 || j == 2) && k == 1) continue;
 					glm::vec3 tempPos = glm::vec3(blockPosition.x + i - 1, blockPosition.y + j - 2, blockPosition.z + k - 1);
 					block = world.getBlock(tempPos);
 					if (block != nullptr && block->type != Cube::AIR)
 					{
-
-						//glm::vec3 direction = position - oldPosition;
-						glm::vec3 direction = view.direction;
-						glm::vec3 contact_point;
-						glm::vec3 contact_normal;
-						float t_hit_near;
-						if (ray::cuboidCollision(position, direction, {position, glm::vec3(1, 1, 1)}, contact_point, contact_normal, t_hit_near))
+						if (ray::dynamicCuboidCollision({ position - glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.5, 1.8, 0.5), v}, {block->position, glm::vec3(1, 1, 1)}, contact_point, contact_normal, contact_time))
 						{
-							
-							utility::printVec3(contact_normal);
-							//view.position += contact_normal;
-							//view.velocity.x = 0;
-							//view.velocity.y = 0;
-							//view.velocity.z = 0;
+							z.push_back({block, contact_time});
 						}
 					}
 				}
+			}
+		}
+		std::sort(z.begin(), z.end(), [](const std::pair<Cube*, float>& a, const std::pair<Cube*, float>& b) {return a.second < b.second; });
+		for (auto j : z)
+		{
+			if (ray::dynamicCuboidCollision({ position - glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.5, 1.8, 0.5), v }, { j.first->position, glm::vec3(1, 1, 1) }, contact_point, contact_normal, contact_time))
+			{
+				v += contact_normal * glm::vec3(abs(v.x), abs(v.y), abs(v.z)) * (1 - contact_time);
 			}
 		}
 	}
@@ -87,27 +88,18 @@ public:
 		blockPosition.x = round(position.x / 2);
 		blockPosition.y = round(position.y / 2);
 		blockPosition.z = round(position.z / 2);
-		blockPositionInChunk.x = (int)blockPosition.x % (CHUNK_SIZE_X);
-		blockPositionInChunk.y = CHUNK_SIZE_Y - abs((int)blockPosition.y % (CHUNK_SIZE_Y));
-		blockPositionInChunk.z = abs((int)blockPosition.z % (CHUNK_SIZE_Z));
-		chunkPosition.x = floor(blockPosition.x / CHUNK_SIZE_X);
-		chunkPosition.y = floor(blockPosition.y / CHUNK_SIZE_Y);
-		chunkPosition.z = -ceil(blockPosition.z / CHUNK_SIZE_Z);
+		blockPositionInChunk = Chunk::getBlockPositionInChunk(blockPosition);
+		chunkPosition = Chunk::getChunkPosition(blockPosition);
 	}
 	void move()
 	{
 		map<unsigned int, bool>& keys = global::pressedKeys;
 		if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
 		{
-			
 			camera.calculateVelocity(keys);
-			
 			checkCollision();
-			
 			camera.move();
 			updatePositions();
-			
-			
 			checkEdgeCollision();
 		}
 	}

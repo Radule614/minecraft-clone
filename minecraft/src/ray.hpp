@@ -5,6 +5,8 @@ namespace ray {
     struct cuboid {
         glm::vec3 position;
         glm::vec3 size;
+
+        glm::vec3 vel;
     };
 
     bool cuboidCollision(glm::vec3& ray_origin, glm::vec3& ray_dir, cuboid target, glm::vec3& contact_point, glm::vec3& contact_normal, float& t_hit_near)
@@ -42,5 +44,22 @@ namespace ray {
         }
 
         return true;
+    }
+
+    bool dynamicCuboidCollision(cuboid in, cuboid target, glm::vec3& contact_point, glm::vec3& contact_normal, float& contact_time)
+    {
+        if (in.vel.x == 0 && in.vel.y == 0 && in.vel.z == 0) return false;
+
+        cuboid expanded_target;
+        expanded_target.position = target.position;
+        expanded_target.size = target.size + in.size;
+        glm::vec3 ray_origin = in.position;
+        glm::vec3 direction = glm::normalize(in.vel);
+        if (cuboidCollision(ray_origin, direction, expanded_target, contact_point, contact_normal, contact_time))
+        {
+            if (contact_time < 1.0f) return true;
+        }
+
+        return false;
     }
 }
