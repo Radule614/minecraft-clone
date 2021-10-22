@@ -5,7 +5,7 @@
 class Player : public Entity
 {
 public:
-	Player(glm::vec3 pos, World& world, glm::vec3 size) : Entity(pos, size), world(world), view(camera) 
+	Player(World& w, glm::vec3 pos, glm::vec3 size, bool gravityON = false) : Entity(w, pos, size, camera.velocity, gravityON), view(camera)
 	{
 		updatePositions();
 	}
@@ -47,7 +47,7 @@ public:
 	void checkCollision()
 	{
 		Cube* block = nullptr;
-		glm::vec3& v = view.velocity;
+		glm::vec3& v = velocity;
 		std::vector<std::pair<Cube *, float>> z;
 		glm::vec3 contact_point;
 		glm::vec3 contact_normal;
@@ -91,17 +91,28 @@ public:
 		blockPositionInChunk = Chunk::getBlockPositionInChunk(blockPosition);
 		chunkPosition = Chunk::getChunkPosition(blockPosition);
 	}
+
+	void setVelocityDelta(float speed)
+	{
+		camera.speed = speed;
+	}
+
 	void move()
 	{
 		map<unsigned int, bool>& keys = global::pressedKeys;
-		if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
+		/*if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
 		{
 			camera.calculateVelocity(keys);
 			checkCollision();
 			camera.move();
 			updatePositions();
 			checkEdgeCollision();
-		}
+		}*/
+		camera.calculateVelocity(keys);
+		checkCollision();
+		camera.move();
+		updatePositions();
+		checkEdgeCollision();
 	}
 
 	void castRay()
@@ -142,7 +153,6 @@ public:
 		}
 	}
 private:
-	World& world;
 	Camera& view;
 	glm::vec3 position;
 	glm::vec3 oldPosition;

@@ -20,6 +20,7 @@
 
 #include "src/world/world.hpp"
 #include "entity/player.hpp"
+#include "physics.hpp"
 
 namespace setup {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -31,9 +32,7 @@ namespace setup {
     }
 
     void processInput(GLFWwindow* window)
-    {
-        camera.speed = 20.0f * deltaTime;
-        
+    {   
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         {
             global::pressedKeys[GLFW_KEY_SPACE] = true;

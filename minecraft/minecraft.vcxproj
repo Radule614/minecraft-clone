@@ -160,6 +160,7 @@
     <ClInclude Include="src\model\cube.hpp" />
     <ClInclude Include="src\model\quad.hpp" />
     <ClInclude Include="src\perlinNoise.hpp" />
+    <ClInclude Include="src\physics.hpp" />
     <ClInclude Include="src\ray.hpp" />
     <ClInclude Include="src\setup.hpp" />
     <ClInclude Include="src\shader.hpp" />

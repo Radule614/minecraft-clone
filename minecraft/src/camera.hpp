@@ -28,6 +28,8 @@ public:
 	glm::vec3 velocity;
 	glm::vec3 oldPosition;
 
+	
+
 	Camera(Type t, glm::vec3 pos = glm::vec3(0.0f)) : type(t), pitch(0.0f), yaw(-90.0f), sensitivity(0.1f), speed(0)
 	{
 		position = pos;
@@ -77,7 +79,7 @@ public:
 		if (dirVector_front != glm::vec3(0) || dirVector_side != glm::vec3(0))
 		{	
 			direction = glm::normalize(dirVector_front + dirVector_side);
-			velocity = speed * direction;	
+			velocity = speed * direction;
 		}
 	}
 

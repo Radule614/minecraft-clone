@@ -7,13 +7,15 @@
 
 class Entity {
 public:
-	Entity(glm::vec3 pos, glm::vec3 size) : position(pos), size(size)
-	{
-
-	}
+	Entity(World& w, glm::vec3 pos, glm::vec3 size, glm::vec3& vel, bool gravityON = false) : world(w), position(pos), size(size), velocity(vel), gravityON(gravityON) {}
 
 	void move();
+
+	World& world;
 	glm::vec3 position;
 	glm::vec3 size;
-public:
+	glm::vec3& velocity;
+	virtual void setVelocityDelta(float speed) = 0;
+	bool gravityON;
+private:
 };

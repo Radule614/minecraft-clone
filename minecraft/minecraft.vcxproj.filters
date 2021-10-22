@@ -83,6 +83,9 @@
     <ClInclude Include="src\perlinNoise.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\physics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\fragment.glsl" />
