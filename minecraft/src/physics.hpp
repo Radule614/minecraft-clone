@@ -34,7 +34,7 @@ public:
 			{
 				
 				temp.setVelocityDelta(this->velocityModifier * global::deltaTime);
-				utility::printVec3(temp.velocity);
+				//utility::printVec3(temp.velocity);
 			}
 		}
 	}

@@ -100,19 +100,14 @@ public:
 	void move()
 	{
 		map<unsigned int, bool>& keys = global::pressedKeys;
-		/*if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
+		if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
 		{
 			camera.calculateVelocity(keys);
 			checkCollision();
 			camera.move();
 			updatePositions();
 			checkEdgeCollision();
-		}*/
-		camera.calculateVelocity(keys);
-		checkCollision();
-		camera.move();
-		updatePositions();
-		checkEdgeCollision();
+		}
 	}
 
 	void castRay()
