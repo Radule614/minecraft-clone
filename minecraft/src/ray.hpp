@@ -14,6 +14,9 @@ namespace ray {
         glm::vec3 t_near = (target.position - (target.size) - ray_origin) / ray_dir;
         glm::vec3 t_far = (target.position + (target.size) - ray_origin) / ray_dir;
 
+        if (isnan(t_far.y) || isnan(t_far.x) || isnan(t_far.y)) return false;
+        if (isnan(t_near.y) || isnan(t_near.x) || isnan(t_near.y)) return false;
+
         if (t_near.x > t_far.x) std::swap(t_near.x, t_far.x);
         if (t_near.y > t_far.y) std::swap(t_near.y, t_far.y);
         if (t_near.z > t_far.z) std::swap(t_near.z, t_far.z);
@@ -55,6 +58,7 @@ namespace ray {
         expanded_target.size = target.size + in.size;
         glm::vec3 ray_origin = in.position;
         glm::vec3 direction = glm::normalize(in.vel);
+        
         if (cuboidCollision(ray_origin, direction, expanded_target, contact_point, contact_normal, contact_time))
         {
             if (contact_time < 1.0f) return true;

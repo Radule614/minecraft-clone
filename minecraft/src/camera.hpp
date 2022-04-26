@@ -55,7 +55,7 @@ public:
 		front = glm::normalize(direction);
 	}
 
-	void calculateVelocity(std::map<unsigned int, bool>& pressedKeys)
+	glm::vec3 calculateMoveDirection(std::map<unsigned int, bool>& pressedKeys)
 	{
 		glm::vec3 dirVector_front = glm::vec3(0);
 		glm::vec3 dirVector_side = glm::vec3(0);
@@ -78,9 +78,23 @@ public:
 		
 		if (dirVector_front != glm::vec3(0) || dirVector_side != glm::vec3(0))
 		{	
-			direction = glm::normalize(dirVector_front + dirVector_side);
-			velocity = speed * direction;
+			if (type == FPS)
+			{
+				glm::vec3 temp = dirVector_front;
+				temp.y = 0;
+				direction = glm::normalize(temp + dirVector_side);
+			}
+			else
+			{
+				direction = glm::normalize(dirVector_front + dirVector_side);
+			}
 		}
+		return direction;
+	}
+
+	void setVelocity(glm::vec3 vel)
+	{
+		this->velocity = speed * vel;
 	}
 
 	void move()

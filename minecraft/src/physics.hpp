@@ -35,6 +35,12 @@ public:
 				
 				temp.setVelocityDelta(this->velocityModifier * global::deltaTime);
 				//utility::printVec3(temp.velocity);
+				if (global::loaded)
+				{
+					temp.gravityComponent.y -= 1.7f * global::deltaTime;
+				}
+
+				//utility::printVec3(temp.velocity);
 			}
 		}
 	}
@@ -78,5 +84,5 @@ private:
 	
 	int currentTick;//miliseconds
 
-	float velocityModifier = 20.0f;
+	float velocityModifier = 17.0f;
 };

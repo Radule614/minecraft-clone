@@ -76,9 +76,28 @@ public:
 		{
 			if (ray::dynamicCuboidCollision({ position - glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.5, 1.8, 0.5), v }, { j.first->position, glm::vec3(1, 1, 1) }, contact_point, contact_normal, contact_time))
 			{
-				v += contact_normal * glm::vec3(abs(v.x), abs(v.y), abs(v.z)) * (1 - contact_time);
+				{
+					v += contact_normal * glm::vec3(abs(v.x), abs(v.y), abs(v.z)) * (1.0f - contact_time);
+					if (contact_normal.y == 1.0f)
+					{
+						if (pressedKeys[GLFW_KEY_SPACE])
+						{
+							gravityComponent = glm::vec3(0.0f, 0.7f, 0.0f);
+						}
+						else
+						{
+							gravityComponent = glm::vec3(0);
+						}
+					}
+					else if (contact_normal.y == -1.0f && gravityComponent.y > 0.0f)
+					{
+						gravityComponent = glm::vec3(0.0f);
+						v.y = 0.0f;
+					}
+				}
 			}
 		}
+		
 	}
 
 	void updatePositions()
@@ -94,7 +113,7 @@ public:
 
 	void setVelocityDelta(float speed)
 	{
-		camera.speed = speed;
+		view.speed = speed;
 	}
 
 	void move()
@@ -102,16 +121,24 @@ public:
 		map<unsigned int, bool>& keys = global::pressedKeys;
 		if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_D] || keys[GLFW_KEY_A])
 		{
-			camera.calculateVelocity(keys);
-			checkCollision();
-			camera.move();
-			updatePositions();
-			checkEdgeCollision();
+			moveComponent = view.calculateMoveDirection(keys);
 		}
+		else
+		{
+			moveComponent = glm::vec3(0);
+		}
+		velocity = moveComponent + gravityComponent;
+		checkCollision();
+		view.setVelocity(velocity);
+		view.move();
+		updatePositions();
+		checkEdgeCollision();
 	}
 
-	void castRay()
+	void castRay(long long time)
 	{
+		if (time - destroyedBlockTime < blockDestroyCooldown) return;
+
 		Cube* block = nullptr;
 		glm::vec3& direction = view.front;
 
@@ -138,6 +165,8 @@ public:
 								if (d <= 9)
 								{
 									world.removeBlock(block);
+									destroyedBlockTime = time;
+									utility::print2Vec3(blockPosition, tempPos);
 									return;
 								}
 							}
@@ -154,4 +183,7 @@ private:
 	glm::vec3 blockPosition;
 	glm::vec3 blockPositionInChunk;
 	glm::vec3 chunkPosition;
+
+	int blockDestroyCooldown = 100;
+	long long destroyedBlockTime;
 };

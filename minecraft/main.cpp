@@ -29,8 +29,6 @@ int main()
     
     engine.printEntities();
 
-    
-
     while (!glfwWindowShouldClose(window))
     {
         float currentFrame = glfwGetTime();
@@ -51,7 +49,7 @@ int main()
 
         if (pressedKeys[GLFW_MOUSE_BUTTON_LEFT])
         {
-            player.castRay();
+            player.castRay(engine.getCount());
         }
 
         objectShader.bind();
@@ -67,6 +65,9 @@ int main()
         setup::processInput(window);
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        if (!global::loaded) global::loaded = true;
+        global::lastFrameTime = glfwGetTime() - currentFrame;
     }
 
     glfwTerminate();
