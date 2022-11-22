@@ -22,12 +22,12 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     World world;
-    Player player(world, camera.position, glm::vec3(1, 2, 1), true);
+    Player player(world, camera.position, glm::vec3(1, 2, 1), false);
 
     Physics engine;
+    global::camera.type = Camera::FREELOOK;
+    engine.setVelocityModifier(120);
     engine.pushEntity(&player);
-    
-    engine.printEntities();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -38,12 +38,8 @@ int main()
         setup::fpsCounter();
         engine.counterTick();
         engine.updateGravity();
-        //glClearColor(0.25f, 0.5f, 1.0f, 1.0f);
         glClearColor(0.3961f, 0.7608f, 96.08f, 1.0f);
-        //glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        //cout << engine.getCount() << endl;
         
         player.move();
 

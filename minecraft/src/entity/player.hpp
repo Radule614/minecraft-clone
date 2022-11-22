@@ -128,11 +128,11 @@ public:
 			moveComponent = glm::vec3(0);
 		}
 		velocity = moveComponent + gravityComponent;
-		checkCollision();
+		if(this->gravityON) checkCollision();
 		view.setVelocity(velocity);
 		view.move();
 		updatePositions();
-		checkEdgeCollision();
+		if(this->gravityON) checkEdgeCollision();
 	}
 
 	void castRay(long long time)
@@ -166,7 +166,7 @@ public:
 								{
 									world.removeBlock(block);
 									destroyedBlockTime = time;
-									utility::print2Vec3(blockPosition, tempPos);
+									//utility::print2Vec3(blockPosition, tempPos);
 									return;
 								}
 							}

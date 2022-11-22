@@ -147,6 +147,7 @@ namespace setup {
         glfwSetMouseButtonCallback(window, mouse_button_callback);
         glViewport(0, 0, screenWidth, screenHeight);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glEnable(GL_DEPTH_TEST);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         glEnable(GL_CULL_FACE);

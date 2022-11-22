@@ -30,18 +30,13 @@ public:
 		for (cit = entities.begin(); cit != entities.end(); ++cit)
 		{
 			Entity& temp = *(*cit);
-			if (temp.gravityON)
-			{
 				
-				temp.setVelocityDelta(this->velocityModifier * global::deltaTime);
-				//utility::printVec3(temp.velocity);
-				if (global::loaded)
-				{
-					temp.gravityComponent.y -= 1.7f * global::deltaTime;
-				}
-
-				//utility::printVec3(temp.velocity);
+			temp.setVelocityDelta(this->velocityModifier * global::deltaTime);
+			if (global::loaded && temp.gravityON)
+			{
+				temp.gravityComponent.y -= 1.7f * global::deltaTime;
 			}
+			
 		}
 	}
 
@@ -77,6 +72,10 @@ public:
 	long long getCount()
 	{
 		return counter;
+	}
+
+	void setVelocityModifier(float velMod) {
+		this->velocityModifier = velMod;
 	}
 private:
 	vector<Entity*> entities;
