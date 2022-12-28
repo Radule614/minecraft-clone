@@ -44,7 +44,7 @@
     <ClInclude Include="src\utility\reader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utility\stb_image.h">
+    <ClInclude Include="src\utility\stb_image.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utility\texture_loader.hpp">

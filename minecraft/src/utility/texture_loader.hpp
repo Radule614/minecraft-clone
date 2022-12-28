@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GLEW/glew.h>
-#include "stb_image.h"
+#include "stb_image.hpp"
 
 namespace TextureLoader {
 	unsigned int load(const char* path, unsigned int n) 
